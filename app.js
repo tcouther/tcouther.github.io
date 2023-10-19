@@ -316,6 +316,7 @@ function addButtonIcon(elem, style){
  */
 function renderPaymentMethodList(){
 
+    let instructions = document.getElementById('instructions');
     let listElement = document.getElementById('payment-method-list');
 
     let listData = [];
@@ -324,6 +325,12 @@ function renderPaymentMethodList(){
 
     for (let value of Object.values(APP_GLOBALS.paymentMethods)) {
         listData.push(value);
+    }
+
+    if ( listData.length === 0 ) {
+        instructions.classList.remove('d-none');
+    } else {
+        instructions.classList.add('d-none');
     }
 
     listData.forEach((item)=>{
