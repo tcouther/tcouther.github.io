@@ -209,12 +209,12 @@ function renderDetailPageOverlay(id){
         detailLink.href = data.link;
         detailLink.innerText = data.description;
         detailName.innerText = '';
-        detailName.classList.add('d-none');
+        //detailName.classList.add('d-none');
     } else {
         detailLink.removeAttribute('href');
         detailLink.innerText = data.link;
-        detailName.innerText = data.description;
-        detailName.classList.remove('d-none');
+        detailName.innerText = '';
+        //detailName.classList.remove('d-none');
     }
 
     showPage('linkDetail');

@@ -353,6 +353,7 @@ top: 8px
     display: inline-block;
     overflow: hidden;
     color: #333;
+    white-space: nowrap;
 }
 
 .detail-link[href] {
