@@ -261,12 +261,14 @@ function handleAddButton(){
         
         let imgEl = codeEl.querySelector('img');
 
+        const typeVal = (APP_GLOBALS.linkTypes[typeEl.value]) ? typeEl.value : 'uncategorized';
+
         addLink({
             'id' : idEl.value,
             'title' : titleEl.value,
             'description' : descEl.value,
             'link' : linkEl.value,
-            'type' : typeEl.value,
+            'type' : typeVal,
             'code' : imgEl.src
         }, closecallback);
 
@@ -309,32 +311,22 @@ function addButtonIcon(elem, style){
     elem.appendChild(elemIcon);
 }
 
-/**
- * function renderLinkList
- * For each link in memory, display a list item
- */
-function renderLinkList(){
 
-    let instructions = document.getElementById('instructions');
-    let listElement = document.getElementById('link-list');
+function getListElement(listType){
 
-    let listData = [];
-    
-    listElement.replaceChildren();
+    const container = document.createElement('DIV');
+    container.className = 'card my-4 p-2';
+    container.style.backgroundColor = listType.color;
 
-    for (let value of Object.values(APP_GLOBALS.linkList)) {
-        listData.push(value);
-    }
+    const headline = document.createElement('h5');
+    headline.className = 'text-center fs-6';
+    headline.innerText = listType.label;
 
-    if ( listData.length === 0 ) {
-        instructions.classList.remove('d-none');
-    } else {
-        instructions.classList.add('d-none');
-    }
+    const ulElement = document.createElement('UL');
+    ulElement.className = 'list-group';
 
-    listData.forEach((item)=>{
+    listType.list.forEach((item)=>{
 
-        
         const elemLabel = document.createElement('LABEL');
         elemLabel.className="list-group-item-label fs-4";
         elemLabel.innerText = item.title;
@@ -376,8 +368,64 @@ function renderLinkList(){
         elemItem.addEventListener('click',()=>{
             handleDetailClick(item.id);
         });
-        listElement.appendChild(elemItem);
+
+        ulElement.appendChild(elemItem);
     });
+
+    container.appendChild(headline);
+    container.appendChild(ulElement);
+
+    return container;
+}
+
+
+/**
+ * function renderLinkList
+ * For each link in memory, display a list item
+ */
+function renderLinkList(){
+
+    let instructions = document.getElementById('instructions');
+    let listElements = document.getElementById('link-lists');
+
+    //clear all
+    listElements.replaceChildren();
+    
+    //produce sorted link list
+    let listTypes = {};
+    let listCount = 0;
+    
+    //build listsTypes
+    for (let item of Object.values(APP_GLOBALS.linkList)) {
+        const typeName = item.type || 'uncategorized';
+
+        if ( !listTypes[typeName] ) {
+            listTypes[typeName] = {
+                'label' : APP_GLOBALS.linkTypes[typeName].label,
+                'color' : APP_GLOBALS.linkTypes[typeName].color,
+                'list' : []
+            };
+        }
+        
+        listTypes[typeName].list.push(item);
+        listCount += 1;
+    }
+
+    if ( listCount === 0 ) {
+        //display instructions
+        instructions.classList.remove('d-none');
+    } else {
+        //hide instructions
+        instructions.classList.add('d-none');
+
+        //render each list (grouped by type)
+        for (let key in listTypes) {
+
+            const listElement = getListElement(listTypes[key]);
+            
+            listElements.appendChild(listElement);
+        }
+    }
 }
 
 /**
@@ -523,7 +571,7 @@ function setupLinkAddFormModal(){
     for (let key in linkTypes) {
         let option = document.createElement('OPTION');
         option.value = key;
-        option.innerText = linkTypes[key];
+        option.innerText = linkTypes[key].label;
         typeField.appendChild(option);
     }
 
@@ -559,8 +607,7 @@ function renderFormModal(id){
         linkEl.value = data.link;
         titleEl.value = data.title;
         descEl.value = data.description;
-
-        typeEl.selectedIndex = 0;
+        typeEl.value = data.type;
         
         submit.innerText = 'Edit';
         labelEl.innerText = 'Edit';
@@ -570,7 +617,6 @@ function renderFormModal(id){
         titleEl.value = "";
         descEl.value = "";
         linkEl.value = "";
-
         typeEl.selectedIndex = 0;
 
         submit.innerText = 'Add';
