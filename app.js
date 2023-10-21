@@ -53,8 +53,9 @@ function setAppGlobals() {
 
     APP_GLOBALS.agreement = data.agreement;
     APP_GLOBALS.userName = data.userName;
-    APP_GLOBALS.paymentMethods = data.paymentMethods;
+    APP_GLOBALS.linkList = data.linkList;
     APP_GLOBALS.userImage = data.userImage;
+    APP_GLOBALS.linkTypes = data.linkTypes;
 }
 
 /**
@@ -63,8 +64,8 @@ function setAppGlobals() {
  */
 function setPages() {
     APP_GLOBALS.pages = {
-        'payList' : document.getElementById('page-payment-list'),
-        'payDetail' : document.getElementById('page-payment-details')
+        'linkList' : document.getElementById('page-links-list'),
+        'linkDetail' : document.getElementById('page-link-details')
     };
 }
 
@@ -105,7 +106,7 @@ function updateSavedData() {
     localStorage.setItem(APP_GLOBALS_CONFIG.storName,data);
 
     setAppGlobals();
-    renderPaymentMethodList();
+    renderLinkList();
     renderProfileName();
     renderProfileImage();
 
@@ -149,7 +150,7 @@ function getBase64(file) {
 
 /**
  * function handleRemoveClick
- * removes a payment method and re-renders list
+ * removes a link and re-renders list
  * @param event {event}
  * @param id {string}
  */
@@ -157,8 +158,8 @@ function handleRemoveClick(event,id){
     event.preventDefault();
     event.stopPropagation();
 
-    delete APP_GLOBALS.paymentMethods[id];
-    renderPaymentMethodList();
+    delete APP_GLOBALS.linkList[id];
+    renderLinkList();
     updateSavedData();
 }
 
@@ -176,7 +177,7 @@ function handleEditClick(event,id){
 
 /**
  * function handleDetailClick
- * Hydrated payment method data in modal and opens modal
+ * Hydrated link data in modal and opens modal
  * @param id {string}
  */
 function handleDetailClick(id){
@@ -191,10 +192,9 @@ function handleDetailClick(id){
  */
 function renderDetailPageOverlay(id){
 
-    const data = APP_GLOBALS.paymentMethods[id];
+    const data = APP_GLOBALS.linkList[id];
 
-    const pagePaymentList = document.getElementById('page-payment-list');
-    const page = document.getElementById('page-payment-details');
+    const page = document.getElementById('page-link-details');
     const detailLink = page.querySelector('.detail-link');
     const detailName = page.querySelector('.detail-name');
     const detailHeadline = page.querySelector('.detail-headline');
@@ -202,50 +202,47 @@ function renderDetailPageOverlay(id){
     // detail-close-button
 
     //hydrate data
-    detailHeadline.innerText = data.headline;
+    detailHeadline.innerText = data.title;
     detailImg.src = data.code;
 
     if (isURL(data.link)) {
         detailLink.href = data.link;
-        detailLink.innerText = data.name;
+        detailLink.innerText = data.description;
         detailName.innerText = '';
         detailName.classList.add('d-none');
     } else {
         detailLink.removeAttribute('href');
         detailLink.innerText = data.link;
-        detailName.innerText = data.name;
+        detailName.innerText = data.description;
         detailName.classList.remove('d-none');
     }
 
-    showPage('payDetail');
+    showPage('linkDetail');
 }
 
 /**
  * function handleAddButton
- * Handles the payment method add modal form submit
+ * Handles the link method add modal form submit
  * Then closes modal 
  */
 function handleAddButton(){
     const modal = document.getElementById('formModal');
 
-    const headEl = document.getElementById('payment-method-headline');
-    const linkEl = document.getElementById('payment-method-link');
-    const nameEl = document.getElementById('payment-method-name');
-    const idEl = document.getElementById('payment-method-id');
+    const titleEl = document.getElementById('form-link-title');
+    const linkEl = document.getElementById('form-link-link');
+    const descEl = document.getElementById('form-link-description');
+    const typeEl = document.getElementById('form-link-type');
+    const idEl = document.getElementById('form-link-id');
     const closEl = modal.querySelector('.modal-close-button');
     const qrcdEl = document.getElementById('qrcode-hidden-container');
     const codeEl = document.createElement('div');
 
     const closecallback = ()=>{
-        headEl.value = '';
-        linkEl.value = '';
-        nameEl.value = '';
-        idEl.value = '';
         closEl.click();
     };
 
-    if (nameEl.value == '' || linkEl.value == '') {
-        alert('please fill the form')
+    if (titleEl.value == '' || linkEl.value == '') {
+        alert('please fill the form');
         return;
     }
 
@@ -264,11 +261,12 @@ function handleAddButton(){
         
         let imgEl = codeEl.querySelector('img');
 
-        addPaymentMethod({
+        addLink({
             'id' : idEl.value,
-            'headline' : headEl.value,
-            'name' : nameEl.value,
+            'title' : titleEl.value,
+            'description' : descEl.value,
             'link' : linkEl.value,
+            'type' : typeEl.value,
             'code' : imgEl.src
         }, closecallback);
 
@@ -277,29 +275,30 @@ function handleAddButton(){
 }
 
 /**
- * function addPaymentMethod
- * Adds a new payment method to state and saves state to disc
+ * function addLink
+ * Adds a new link to state and saves state to disc
  * @param itemToAdd {object}
  * @param callbackFunc {function}
  */
-function addPaymentMethod( itemToAdd, callbackFunc ){
+function addLink( itemToAdd, callbackFunc ){
     
-    let listData = APP_GLOBALS.paymentMethods;
+    let listData = APP_GLOBALS.linkList;
     let lookupId = (itemToAdd.id && itemToAdd.id !== "") ? itemToAdd.id : getUUID();
 
     let model = {
         'id': lookupId,
-        'headline':itemToAdd.headline, 
-        'name':itemToAdd.name, 
+        'title':itemToAdd.title, 
+        'description':itemToAdd.description, 
+        'type':itemToAdd.type, 
         'link':itemToAdd.link.replaceAll(' ', ''),
         'code':itemToAdd.code
     };
 
     listData[lookupId] = model;
 
-    APP_GLOBALS.paymentMethods = listData;
+    APP_GLOBALS.linkList = listData;
 
-    renderPaymentMethodList();
+    renderLinkList();
     updateSavedData();
     callbackFunc();
 }
@@ -311,19 +310,19 @@ function addButtonIcon(elem, style){
 }
 
 /**
- * function renderPaymentMethodList
- * For each payment method in memory, display a list item
+ * function renderLinkList
+ * For each link in memory, display a list item
  */
-function renderPaymentMethodList(){
+function renderLinkList(){
 
     let instructions = document.getElementById('instructions');
-    let listElement = document.getElementById('payment-method-list');
+    let listElement = document.getElementById('link-list');
 
     let listData = [];
     
     listElement.replaceChildren();
 
-    for (let value of Object.values(APP_GLOBALS.paymentMethods)) {
+    for (let value of Object.values(APP_GLOBALS.linkList)) {
         listData.push(value);
     }
 
@@ -335,9 +334,10 @@ function renderPaymentMethodList(){
 
     listData.forEach((item)=>{
 
+        
         const elemLabel = document.createElement('LABEL');
         elemLabel.className="list-group-item-label fs-4";
-        elemLabel.innerText = item.name;
+        elemLabel.innerText = item.title;
 
         const elemItem = document.createElement('LI');
         elemItem.className = "list-group-item p-3 d-flex justify-content-between cursor-pointer";
@@ -456,18 +456,16 @@ function setupUserNameModal(){
     * function setupDetailModal
     * Setup events for the modal
     */
-function setupPaymentDetailModal(){
+function setupLinkDetailModal(){
 
-
-    const pagePaymentList = document.getElementById('page-payment-list');
-    const page = document.getElementById('page-payment-details');
+    const page = document.getElementById('page-link-details');
     const detailLink = page.querySelector('.detail-link');
     const closeButton = page.querySelector('.detail-close-button');
     const detailShare = page.querySelector('.detail-share');
     const detailPrint = page.querySelector('.detail-print');
 
     closeButton.addEventListener('click',()=>{
-        showPage('payList');
+        showPage('linkList');
     });
 
     detailPrint.addEventListener('click',()=>{
@@ -501,21 +499,35 @@ function setupPaymentDetailModal(){
     * function setupFormModal
     * Setup events for the modal
     */
-function setupPaymentAddFormModal(){
+function setupLinkAddFormModal(){
 
     APP_GLOBALS.formModalInstance = new bootstrap.Modal(document.getElementById('formModal'), {keyboard: false});
 
-    const addButton = document.getElementById('add-payment-methods-button');
-    const modalType = document.getElementById('payment-method-type');
-    const linkEl = document.getElementById('payment-method-link');
-    const nameEl = document.getElementById('payment-method-name');
-
-    modalType.addEventListener('change',(event)=>{
-        const text = modalType.options[modalType.selectedIndex].text;
-        const value = modalType.options[modalType.selectedIndex].value;
-        linkEl.value = value;
-        nameEl.value = text;
+    const linkTypes = APP_GLOBALS.linkTypes;
+    const typeField = document.getElementById('form-link-type');
+    const linkField = document.getElementById('form-link-link');
+    const descField = document.getElementById('form-link-description');
+    const pasteBttn = document.getElementById('form-link-paste-button');
+    
+    pasteBttn.addEventListener('click', (event)=>{
+        navigator.clipboard
+        .readText()
+        .then(
+            (clipText) => {
+                linkField.value = clipText;
+                descField.value = clipText;
+            },
+        );
     });
+
+    for (let key in linkTypes) {
+        let option = document.createElement('OPTION');
+        option.value = key;
+        option.innerText = linkTypes[key];
+        typeField.appendChild(option);
+    }
+
+    const addButton = document.getElementById('add-link-button');
 
     addButton.addEventListener('click', (event)=>{
         renderFormModal();
@@ -530,31 +542,39 @@ function setupPaymentAddFormModal(){
 function renderFormModal(id){
 
     //set fields
-    const typeEl = document.getElementById('payment-method-type');
-    const idEl = document.getElementById('payment-method-id');
-    const headEl = document.getElementById('payment-method-headline');
-    const linkEl = document.getElementById('payment-method-link');
-    const nameEl = document.getElementById('payment-method-name');
-    const submit = document.getElementById('payment-method-submit');
-
-    typeEl.selectedIndex = 0;
+    const typeEl = document.getElementById('form-link-type');
+    const idEl = document.getElementById('form-link-id');
+    const titleEl = document.getElementById('form-link-title');
+    const linkEl = document.getElementById('form-link-link');
+    const descEl = document.getElementById('form-link-description');
+    const submit = document.getElementById('form-link-submit');
+    const labelEl = document.getElementById('formModalLabel');
+    
     
     if ( id ) {
         //patch mode
-        const data = APP_GLOBALS.paymentMethods[id];
+        const data = APP_GLOBALS.linkList[id];
 
         idEl.value = data.id;
-        headEl.value = data.headline;
-        nameEl.value = data.name;
         linkEl.value = data.link;
+        titleEl.value = data.title;
+        descEl.value = data.description;
+
+        typeEl.selectedIndex = 0;
+        
         submit.innerText = 'Edit';
+        labelEl.innerText = 'Edit';
     } else {
         //post mode
         idEl.value = "";
-        headEl.value = "";
-        nameEl.value = "";
+        titleEl.value = "";
+        descEl.value = "";
         linkEl.value = "";
+
+        typeEl.selectedIndex = 0;
+
         submit.innerText = 'Add';
+        labelEl.innerText = 'Add';
     }
 
     //show
@@ -593,8 +613,6 @@ function setupPWAModal(){
 }
 
 function renderPWAModal(){
-    const methods = document.getElementById('user-payment-methods');
-    const links = document.getElementById('user-links');
 
     if (iOSCanInstall && !iOSIsInstalled) {
         
@@ -675,14 +693,14 @@ setPages();
 setupAgreementModal();
 
 //render
-renderPaymentMethodList();
+renderLinkList();
 renderProfileName();
 renderProfileImage();
 
 //setup modals and events
 setupUserNameModal();
-setupPaymentDetailModal();
-setupPaymentAddFormModal();
+setupLinkDetailModal();
+setupLinkAddFormModal();
 setupFileUploadModal();
 setupFormDeleteAllModal();
 setupPWAModal();

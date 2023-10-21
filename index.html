@@ -4,7 +4,6 @@
         <!-- BESTOW APP PROTOTYPE : 2023 -->
         <title>Bestow</title>
         <meta charset="utf-8">
-        
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="style.css" />
@@ -27,8 +26,6 @@
         <meta name="apple-mobile-web-app-capable" content="yes"/>
         <meta name="mobile-web-app-capable" content="yes"/>
         
-        
-
         <!-- PWA -->
         <link rel="manifest" href="manifest.json" />
 
@@ -44,11 +41,20 @@
              * Config : Add defaults here
              */
              const APP_GLOBALS_CONFIG = {
+                linkList: {},
                 agreement: 'no',
-                storName: 'bestowApp1',
-                userName: 'Bestow',
+                storName: 'bestowAppBeta001',
+                userName: 'Bestow beta 001',
                 userImage: 'images/profile.png',
-                paymentMethods: {}                
+                linkTypes: {
+                    'uncategorized':'Uncategorized',
+                    'news':'News',
+                    'payment':'Payment',
+                    'referral':'Referral codes',
+                    'research':'Research',
+                    'social-media':'Social media',
+                    'shopping':'Shopping'
+                }            
             };
         </script>
     </head>
@@ -56,12 +62,12 @@
         <main>
 
 
-            <!-- Payment Page -->
-            <div id="page-payment-list">
+            <!-- Links Page -->
+            <div id="page-links-list">
 
 
                     <!-- User Profile -->
-                    <section class="container" id="user-profile">
+                    <section class="container" id="user-profile-section">
                         <div class="row align-items-center">
                             <div class="col-sm-1"></div>
                             <div class="col-sm-10 text-center">
@@ -77,8 +83,8 @@
                         </div>
                     </section>
 
-                    <!-- Payment Methods -->
-                    <section class="container" id="user-payment-methods">
+                    <!-- Link List -->
+                    <section class="container" id="user-link-list-section">
                         <div class="row align-items-center">
                             <div class="col-sm-1"></div>
                             <div class="col-sm-10">
@@ -92,10 +98,10 @@
                                         </p>
                                     </div>
                                 </div>
-                                <ul id="payment-method-list" class="payment-method-list mt-3 mb-3 list-group">
+                                <ul id="link-list" class="link-list mt-3 mb-3 list-group">
                                     <!-- dynamically hydrated -->
                                 </ul>
-                                <button id="add-payment-methods-button" type="button" class="btn btn-success w-100">
+                                <button id="add-link-button" type="button" class="btn btn-success w-100">
                                     Add Bestow +
                                 </button>
                             </div>
@@ -104,19 +110,17 @@
                     </section>
 
                     <!-- Buttons and Links Section -->
-                    <section class="container mb-3" id="user-links">
+                    <section class="container mb-3" id="user-buttons-section">
                         <div class="row align-items-center">
                             <div class="col-sm-1"></div>
                             <div class="col-sm-10 text-center">
                                 <div class="mt-2">
-                                    <button id="user-preferences-button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#listModalPreferences"> Preferences</button>
+                                    <button id="user-preferences-button" class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#listModalPreferences">Preferences</button>
                                 </div>
                             </div>
                             <div class="col-sm-1"></div>
                         </div>
                     </section>
-
-
             </div>
 
 
@@ -124,8 +128,8 @@
 
 
 
-            <!-- Payment Method Details Page -->
-            <div id="page-payment-details" class="d-none">
+            <!-- Link Details Page -->
+            <div id="page-link-details" class="d-none">
                 
                     
                     <section class="container mb-3 text-center" id="">
@@ -215,7 +219,7 @@
                                 Because your information is not stored online, this action is permanent and there's no way to recover your data. 
                             </p>
                             <p>
-                                After you click "Delete All Data", all data is deleted, your payment links and user profile data will be removed.
+                                After you click "Delete All Data", all data is deleted, your links and user profile data will be removed.
                             </p>
                         </div>
                         <div class="modal-footer">
@@ -245,7 +249,7 @@
                 </div>
             </div>
 
-            <!-- Modal Form Payment Method -->
+            <!-- Modal Form Link -->
             <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formeModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -255,32 +259,31 @@
                         </div>
                         <div class="modal-body">
                             <form>
-                                <input type="hidden" name="id" id="payment-method-id" value="" />
+                                <input type="hidden" name="id" id="form-link-id" value="" />
 
-                                <label for="payment-method-type" class="form-label">Type (optional)</label>
+                                <label for="form-link-link" class="form-label">Link</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" id="form-link-link" class="form-control" placeholder="Link" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <button id="form-link-paste-button" class="btn btn-outline-secondary" type="button" id="button-addon2">Paste</button>
+                                </div>
+
+
+                                <label for="form-link-description" class="form-label">Link text description</label>
+                                <input type="text" class="form-control mb-3" id="form-link-description" placeholder="Description" />
+                                
+                                <label for="form-link-title" class="form-label">Title or Headline</label>
+                                <input type="text" class="form-control mb-3" id="form-link-title" placeholder="Title" />
+                                
+                                <label for="form-link-type" class="form-label">Type of link</label>
                                 <select 
-                                class="form-select mb-3" id="payment-method-type">
+                                class="form-select mb-3" id="form-link-type">
                                     <option selected>Select a Type</option>
-                                    <option value="">Bitcoin</option>
-                                    <option value="https://cash.app/$">CashApp</option>
-                                    <option value="">Ethereum</option>
-                                    <option value="https://www.paypal.me/">Paypal</option>
-                                    <option value="https://venmo.com/u/">Venmo</option>
                                 </select>
-
-                                <label for="payment-method-headline" class="form-label">Headline</label>
-                                <input type="text" class="form-control mb-3" id="payment-method-headline" placeholder="Headline" />
-                                
-                                <label for="payment-method-name" class="form-label">Name</label>
-                                <input type="text" class="form-control mb-3" id="payment-method-name" placeholder="Name" />
-                                
-                                <label for="payment-method-link" class="form-label">Link or Account</label>
-                                <input type="text" class="form-control mb-3" id="payment-method-link" placeholder="Link" />
                             </form>
                         </div>
                         <div class="modal-footer">
                             <div class="flex-fill">
-                                <button id="payment-method-submit" type="button" class="btn btn-primary w-100" onclick="handleAddButton()">Add</button>
+                                <button id="form-link-submit" type="button" class="btn btn-primary w-100" onclick="handleAddButton()">Add</button>
                             </div>
                             <div class="flex-fill">
                                 <button type="button" class="btn btn-secondary modal-close-button w-100" data-bs-dismiss="modal">Cancel</button>
