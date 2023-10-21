@@ -543,6 +543,24 @@ function setupLinkDetailModal(){
     });
 }
 
+
+
+async function getClipboardContent(){
+    let items = await navigator.clipboard.read();
+    for (let item of items) {
+        if (item.types.includes("text/uri-list")){
+            alert("text/uri-list");
+        }
+        if (item.types.includes("text/html")){
+            alert("text/html");
+        }
+        if (item.types.includes("text/plain")){
+            alert("text/plain");
+        }
+    }
+}
+
+
 /**
     * function setupFormModal
     * Setup events for the modal
@@ -558,10 +576,14 @@ function setupLinkAddFormModal(){
     const pasteBttn = document.getElementById('form-link-paste-button');
     
     pasteBttn.addEventListener('click', (event)=>{
+
+        let c = getClipboardContent();
+
         navigator.clipboard
         .readText()
         .then(
             (clipText) => {
+
                 linkField.value = clipText;
                 descField.value = clipText;
             },
