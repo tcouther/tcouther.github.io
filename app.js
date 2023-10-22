@@ -548,9 +548,12 @@ function setupLinkDetailModal(){
 async function getClipboardContent(){
 
     let items = await navigator.clipboard.read();
+
+    let reg = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/
     let res = null;
     let uri = null;
     let txt = null;
+    let extractLink = ''; 
 
     for (let item of items) {
         if (item.types.includes("text/uri-list")){
@@ -560,6 +563,12 @@ async function getClipboardContent(){
         if (item.types.includes("text/plain")){
             res = await item.getType("text/plain");
             txt = await res.text();
+
+            //for paragraph based clipboard content, we extract the first link
+            if ( txt.includes(' ') ) {
+                extractLink = txt.match(reg);
+                txt = (extractLink) ? extractLink[0] : txt;
+            }
         }
     }
 
