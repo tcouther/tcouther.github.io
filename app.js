@@ -546,18 +546,24 @@ function setupLinkDetailModal(){
 
 
 async function getClipboardContent(){
+
     let items = await navigator.clipboard.read();
+    let res = null;
+    let uri = null;
+    let txt = null;
+
     for (let item of items) {
         if (item.types.includes("text/uri-list")){
-            alert("text/uri-list");
-        }
-        if (item.types.includes("text/html")){
-            alert("text/html");
+            res = await item.getType("text/uri-list");   
+            uri = await res.text();
         }
         if (item.types.includes("text/plain")){
-            alert("text/plain");
+            res = await item.getType("text/plain");
+            txt = await res.text();
         }
     }
+
+    return uri || txt;
 }
 
 
@@ -577,10 +583,14 @@ function setupLinkAddFormModal(){
     
     pasteBttn.addEventListener('click', (event)=>{
 
-        let c = getClipboardContent();
+        getClipboardContent().then((clipText)=>{
+            linkField.value = clipText;
+            descField.value = clipText;
+        });
 
-        navigator.clipboard
-        .readText()
+        /*
+        This approach didn't work for the text/uri-list mime type
+        navigator.clipboard.readText()
         .then(
             (clipText) => {
 
@@ -588,6 +598,7 @@ function setupLinkAddFormModal(){
                 descField.value = clipText;
             },
         );
+        */
     });
 
     for (let key in linkTypes) {
