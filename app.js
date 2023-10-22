@@ -315,11 +315,11 @@ function addButtonIcon(elem, style){
 function getListElement(listType){
 
     const container = document.createElement('DIV');
-    container.className = 'card my-4 p-2';
+    container.className = 'p-2';
     container.style.backgroundColor = listType.color;
 
     const headline = document.createElement('h5');
-    headline.className = 'text-center fs-6';
+    headline.className = 'text-center p-2 fs-4 opacity-50';
     headline.innerText = listType.label;
 
     const ulElement = document.createElement('UL');

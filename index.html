@@ -69,8 +69,7 @@
                     <!-- User Profile -->
                     <section class="container" id="user-profile-section">
                         <div class="row align-items-center">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-10 text-center">
+                            <div class="col-sm-12 text-center">
 
                                 <div id="profile-photo-container" class="profile-photo-container">
                                     <img class="photo-img mt-3" src="" alt="logo" id="user-preferences-button" data-bs-toggle="modal" data-bs-target="#listModalPreferences" />
@@ -79,17 +78,7 @@
                                 <h1 class="mt-1">
                                     <label id="user-name-label" for="user-name" class=""></label>
                                 </h1>
-                                
-                            </div>
-                            <div class="col-sm-1"></div>
-                        </div>
-                    </section>
 
-                    <!-- Link List -->
-                    <section class="container" id="user-link-list-section">
-                        <div class="row align-items-center">
-                            <div class="col-sm-1"></div>
-                            <div class="col-sm-10">
                                 <div class="card bg-light my-4" id="instructions">
                                     <div class="card-body text-center fs-6">
                                         <p class="m-2">
@@ -104,14 +93,23 @@
                                         </p>
                                     </div>
                                 </div>
+
                                 <button id="add-link-button" type="button" class="btn btn-success w-100 my-2 fs-3">
                                     Add Bestow +
                                 </button>
-                                <div id="link-lists">
+                                
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Link List -->
+                    <section class="container" id="user-link-list-section">
+                        <div class="row align-items-center">
+                            <div class="col-sm-12">
+                                <div id="link-lists" class="card">
                                     <!-- dynamically hydrated -->
                                 </div>
                             </div>
-                            <div class="col-sm-1"></div>
                         </div>
                     </section>
 
