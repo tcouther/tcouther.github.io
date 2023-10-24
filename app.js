@@ -58,6 +58,9 @@ function setAppGlobals() {
     APP_GLOBALS.linkTypes = data.linkTypes;
 }
 
+
+
+
 /**
  * function setPages
  * sets APP_GLOBALS pages
@@ -100,13 +103,13 @@ function updateSavedData() {
  * function deleteAllSavedData
  * deletes all saved data and rerender page.
  */
-    function deleteAllSavedData() {
+function deleteAllSavedData() {
 
     const data = JSON.stringify(APP_GLOBALS_CONFIG);
     localStorage.setItem(APP_GLOBALS_CONFIG.storName,data);
 
     setAppGlobals();
-    renderLinkList();
+    renderLinkAccordions();
     renderProfileName();
     renderProfileImage();
 
@@ -117,7 +120,7 @@ function updateSavedData() {
  * function setAgreementStatus
  * update user agreement status
  */
-    function setAgreementStatus(status) {
+function setAgreementStatus(status) {
 
     APP_GLOBALS.agreement = status;
     updateSavedData();
@@ -159,7 +162,7 @@ function handleRemoveClick(event,id){
     event.stopPropagation();
 
     delete APP_GLOBALS.linkList[id];
-    renderLinkList();
+    renderLinkAccordions();
     updateSavedData();
 }
 
@@ -300,7 +303,7 @@ function addLink( itemToAdd, callbackFunc ){
 
     APP_GLOBALS.linkList = listData;
 
-    renderLinkList();
+    renderLinkAccordions();
     updateSavedData();
     callbackFunc();
 }
@@ -311,16 +314,13 @@ function addButtonIcon(elem, style){
     elem.appendChild(elemIcon);
 }
 
-
+/**
+ * function getListElement
+ * displays the profile image if image exists in APP_GLOBALS
+ */
 function getListElement(listType){
 
     const container = document.createElement('DIV');
-    container.className = 'p-2';
-    container.style.backgroundColor = listType.color;
-
-    const headline = document.createElement('h5');
-    headline.className = 'text-center p-2 fs-4 opacity-50';
-    headline.innerText = listType.label;
 
     const ulElement = document.createElement('UL');
     ulElement.className = 'list-group';
@@ -372,61 +372,11 @@ function getListElement(listType){
         ulElement.appendChild(elemItem);
     });
 
-    container.appendChild(headline);
     container.appendChild(ulElement);
 
     return container;
 }
 
-
-/**
- * function renderLinkList
- * For each link in memory, display a list item
- */
-function renderLinkList(){
-
-    let instructions = document.getElementById('instructions');
-    let listElements = document.getElementById('link-lists');
-
-    //clear all
-    listElements.replaceChildren();
-    
-    //produce sorted link list
-    let listTypes = {};
-    let listCount = 0;
-    
-    //build listsTypes
-    for (let item of Object.values(APP_GLOBALS.linkList)) {
-        const typeName = item.type || 'uncategorized';
-
-        if ( !listTypes[typeName] ) {
-            listTypes[typeName] = {
-                'label' : APP_GLOBALS.linkTypes[typeName].label,
-                'color' : APP_GLOBALS.linkTypes[typeName].color,
-                'list' : []
-            };
-        }
-        
-        listTypes[typeName].list.push(item);
-        listCount += 1;
-    }
-
-    if ( listCount === 0 ) {
-        //display instructions
-        instructions.classList.remove('d-none');
-    } else {
-        //hide instructions
-        instructions.classList.add('d-none');
-
-        //render each list (grouped by type)
-        for (let key in listTypes) {
-
-            const listElement = getListElement(listTypes[key]);
-            
-            listElements.appendChild(listElement);
-        }
-    }
-}
 
 /**
  * function renderProfileImage
@@ -543,8 +493,10 @@ function setupLinkDetailModal(){
     });
 }
 
-
-
+/**
+    * function getClipboardContent
+    * returns clipboard content (text/uri-list or text/plain)
+    */
 async function getClipboardContent(){
 
     let items = await navigator.clipboard.read();
@@ -577,6 +529,31 @@ async function getClipboardContent(){
 
 
 /**
+    * function getHostName
+    * returns hostname from domain name
+    */
+function getTitleFromUrl(txt){
+
+    if ( isURL(txt) ) {
+        let domain = (new URL(txt));
+        let hostname = domain.hostname;
+        let hostparts = hostname.split('.');
+
+        
+        if ( hostparts.length > 1 ) {
+            hostparts.pop();
+        }
+
+        txt = hostparts.reduce((a, b) => a.length <= b.length ? b : a);
+    } else {
+        txt = '';
+    }
+
+    return (txt && txt.length > 1) ? txt.replace(/^./, str => str.toUpperCase()) : txt;
+}
+
+
+/**
     * function setupFormModal
     * Setup events for the modal
     */
@@ -589,25 +566,15 @@ function setupLinkAddFormModal(){
     const linkField = document.getElementById('form-link-link');
     const descField = document.getElementById('form-link-description');
     const pasteBttn = document.getElementById('form-link-paste-button');
+    const titleField = document.getElementById('form-link-title');
     
     pasteBttn.addEventListener('click', (event)=>{
 
         getClipboardContent().then((clipText)=>{
             linkField.value = clipText;
             descField.value = clipText;
+            titleField.value = getTitleFromUrl(clipText);
         });
-
-        /*
-        This approach didn't work for the text/uri-list mime type
-        navigator.clipboard.readText()
-        .then(
-            (clipText) => {
-
-                linkField.value = clipText;
-                descField.value = clipText;
-            },
-        );
-        */
     });
 
     for (let key in linkTypes) {
@@ -616,12 +583,6 @@ function setupLinkAddFormModal(){
         option.innerText = linkTypes[key].label;
         typeField.appendChild(option);
     }
-
-    const addButton = document.getElementById('add-link-button');
-
-    addButton.addEventListener('click', (event)=>{
-        renderFormModal();
-    });
 }
 
 /**
@@ -629,7 +590,7 @@ function setupLinkAddFormModal(){
     * Render the modal
     * @param id {string}
     */
-function renderFormModal(id){
+function renderFormModal(id,typeId){
 
     //set fields
     const typeEl = document.getElementById('form-link-type');
@@ -659,7 +620,12 @@ function renderFormModal(id){
         titleEl.value = "";
         descEl.value = "";
         linkEl.value = "";
-        typeEl.selectedIndex = 0;
+
+        if ( typeId ) {
+            typeEl.value = typeId;
+        } else {
+            typeEl.selectedIndex = 0;
+        }
 
         submit.innerText = 'Add';
         labelEl.innerText = 'Add';
@@ -700,6 +666,10 @@ function setupPWAModal(){
     renderPWAModal();
 }
 
+/**
+    * function renderPWAModal
+    * Displays the PWA install modal
+    */
 function renderPWAModal(){
 
     if (iOSCanInstall && !iOSIsInstalled) {
@@ -765,9 +735,138 @@ function lock(){
     lock.style.display = ( APP_GLOBALS.agreement == 'yes' ) ? 'none' : 'block';
 }
 
+/**
+    * function renderAddButton
+    * Render an Add Button
+    */
+function renderAddButton(container,data){
+    let button = document.createElement('BUTTON');
+    button.className = 'btn btn-light w-100 fs-5 mt-2 ';
+    button.innerText = 'Add to ' + data.label + ' +';
 
+    button.addEventListener('click',()=>{
+        renderFormModal(null,data.id);
+    });
 
+    container.appendChild(button);
+}
 
+/**
+    * function renderLinkAccordions
+    * Render an Accordion for links
+    */
+function renderLinkAccordions(){
+    const linkTypes = APP_GLOBALS.linkTypes;
+    const containerId = 'accordionLinkLists';
+    const container = document.getElementById(containerId);
+
+    container.replaceChildren();
+
+    for (let key in linkTypes) {
+        
+        const itemId = `accordion-item-${key}`;
+        const itemHeadlineId = `accordion-headline-${key}`;
+        const itemBodyId = `accordion-body-${key}`;
+
+        const accordionItem = document.createElement('DIV');
+        accordionItem.className = 'accordion-item';
+
+        const accordionItemHeader = document.createElement('H2');
+        accordionItemHeader.className = 'accordion-header';
+        accordionItemHeader.id = itemHeadlineId;
+
+        const accordionItemHeaderButton = document.createElement('BUTTON');
+        accordionItemHeaderButton.className = 'accordion-button collapsed fs-4';
+        accordionItemHeaderButton.type = 'button';
+        accordionItemHeaderButton.dataset.bsToggle = 'collapse';
+        accordionItemHeaderButton.dataset.bsTarget = `#${itemId}`;
+        accordionItemHeaderButton.setAttribute('aria-expanded','false');
+        accordionItemHeaderButton.setAttribute('aria-controls',itemId);
+        accordionItemHeaderButton.innerText = linkTypes[key].label;
+        accordionItemHeaderButton.style.backgroundColor = linkTypes[key].color;
+
+        const accordionItemDrawer = document.createElement('DIV');
+        accordionItemDrawer.className = 'accordion-collapse collapse';
+        accordionItemDrawer.id = itemId;
+        accordionItemDrawer.setAttribute('aria-labelledby',itemHeadlineId);
+        accordionItemDrawer.dataset.bsParent = `#${containerId}`;
+        accordionItemDrawer.style.backgroundColor = linkTypes[key].color;
+
+        const accordionItemBody = document.createElement('DIV');
+        accordionItemBody.className = 'accordion-body p-1';
+        accordionItemBody.id = itemBodyId;
+
+        const emptyMessage = document.createElement('P');
+        emptyMessage.className = 'category-empty-message fs-6 m-3';
+        emptyMessage.innerText = "Nothing to see here. Links are not yet added to this category.";
+        
+        accordionItemBody.appendChild(emptyMessage);
+        accordionItemHeader.appendChild(accordionItemHeaderButton);
+        accordionItemDrawer.appendChild(accordionItemBody);
+        accordionItem.appendChild(accordionItemHeader);
+        accordionItem.appendChild(accordionItemDrawer);
+
+        renderAddButton(accordionItemBody, {
+            id: key,
+            label: linkTypes[key].label
+        });
+
+        container.appendChild(accordionItem);
+    }
+
+    renderLinkList();
+}
+
+/**
+    * function renderLinkList
+    * Renders links in each accordion drawer
+    */
+function renderLinkList(){
+
+    let instructions = document.getElementById('instructions');
+    
+    //produce sorted link list
+    let listTypes = {};
+    let listCount = 0;
+    
+    //build listsTypes
+    for (let item of Object.values(APP_GLOBALS.linkList)) {
+        const typeName = item.type || 'uncategorized';
+
+        if ( !listTypes[typeName] ) {
+            listTypes[typeName] = {
+                'label' : APP_GLOBALS.linkTypes[typeName].label,
+                'color' : APP_GLOBALS.linkTypes[typeName].color,
+                'list' : []
+            };
+        }
+        
+        listTypes[typeName].list.push(item);
+        listCount += 1;
+    }
+
+    if ( listCount === 0 ) {
+        //display instructions
+        instructions.classList.remove('d-none');
+    } else {
+        //hide instructions
+        instructions.classList.add('d-none');
+
+        //render each list (grouped by type)
+        for (let key in listTypes) {
+
+            const accordionBody = document.getElementById(`accordion-body-${key}`);
+
+            if (accordionBody) {
+                const emptyMessage = accordionBody.querySelector('.category-empty-message');
+                emptyMessage.remove();
+                const listElement = getListElement(listTypes[key]);
+                accordionBody.prepend(listElement);
+
+            }
+        }
+    }
+}
 
 
 
@@ -781,7 +880,7 @@ setPages();
 setupAgreementModal();
 
 //render
-renderLinkList();
+renderLinkAccordions();
 renderProfileName();
 renderProfileImage();
 
@@ -793,4 +892,5 @@ setupFileUploadModal();
 setupFormDeleteAllModal();
 setupPWAModal();
 
+//lock UX before agreement
 lock();

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <!-- BESTOW APP PROTOTYPE : 2023 -->
-        <title>Bestow</title>
+        <!-- QRCubby APP PROTOTYPE : 2023 -->
+        <title>QRCubby Beta0.04</title>
         <meta charset="utf-8">
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -43,17 +43,16 @@
              const APP_GLOBALS_CONFIG = {
                 linkList: {},
                 agreement: 'no',
-                storName: 'bestowAppBeta003',
-                userName: 'Bestow beta 0.03',
+                storName: 'QRCubbyAppBeta004',
+                userName: 'QRCubby beta0.04',
                 userImage: 'images/profile.png',
                 linkTypes: {
-                    'uncategorized':{'label':'Uncategorized','color':'#EEEEEE'},
-                    'news':{'label':'News','color':'#cecece'},
-                    'payment':{'label':'Payment','color':'#d1e7dd'},
-                    'referral':{'label':'Referral codes','color':'#fefefe'},
-                    'research':{'label':'Research','color':'#cff4fc'},
-                    'social-media':{'label':'Social media','color':'#fff3cd'},
-                    'shopping':{'label':'Shopping','color':'#cfe2ff'},
+                    'uncategorized':{'label':'Links','color':'#efadce'},
+                    'news':{'label':'News Articles','color':'#ffdd9c'},
+                    'payment':{'label':'Payments','color':'#d1e7dd'},
+                    'referral':{'label':'Referral codes','color':'#cff4fc'},
+                    'social-media':{'label':'Social media','color':'#9aa2d8'},
+                    'shopping':{'label':'Shopping','color':'#b29ad8'}
                 }            
             };
         </script>
@@ -64,7 +63,6 @@
 
             <!-- Links Page -->
             <div id="page-links-list">
-
 
                     <!-- User Profile -->
                     <section class="container" id="user-profile-section">
@@ -79,40 +77,27 @@
                                     <label id="user-name-label" for="user-name" class=""></label>
                                 </h1>
 
-                                <div class="card bg-light my-4" id="instructions">
-                                    <div class="card-body text-center fs-6">
-                                        <p class="m-2">
-                                            <i class="gg-info m-auto"></i>
-                                        </p>
+                                <div class="my-4">
+                                    <div class="text-center fs-6">
                                         <p>
-                                            Bestow is the quick and easy way to captures QR codes to store and share! 
-                                            Bestow also allows you to store and share your favorite links to ads, invites or coupons!
-                                        </p>
-                                        <p>
-                                            Click <b>Add Bestow</b> to get started.
+                                            QRCubby is the quick and easy way to capture QR codes to store and share! 
+                                            <span id="instructions">QRCubby also allows you to store and share your favorite links to ads, invites or coupons!</span>
                                         </p>
                                     </div>
                                 </div>
-
-                                <button id="add-link-button" type="button" class="btn btn-success w-100 my-2 fs-3">
-                                    Add Bestow +
-                                </button>
                                 
                             </div>
                         </div>
                     </section>
 
                     <!-- Link List -->
-                    <section class="container" id="user-link-list-section">
+                    <section class="container my-2" id="user-link-list-section">
                         <div class="row align-items-center">
                             <div class="col-sm-12">
-                                <div id="link-lists" class="card">
-                                    <!-- dynamically hydrated -->
-                                </div>
+                                <div class="accordion" id="accordionLinkLists"></div>
                             </div>
                         </div>
                     </section>
-
             </div>
 
 
@@ -246,7 +231,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="formModalLabel">Add Bestow</h5>
+                            <h5 class="modal-title" id="formModalLabel">Add Link</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -316,7 +301,7 @@
                                     <i class="gg-smartphone m-auto"></i><br>
                                     Add to Home Screen</h3>
                                 <p>To install the app, you need to add this website to your Home screen.</p>
-                                <p>In your Safari browser menu, tap the Share icon and choose <b>Add to Home Screen</b> in the options. Then open the Bestow app on your home screen.</p>
+                                <p>In your Safari browser menu, tap the Share icon and choose <b>Add to Home Screen</b> in the options. Then open the QRCubby app on your home screen.</p>
                             </div>
                         </div>
                     </div>
@@ -340,11 +325,11 @@
                                 IF YOU DO NOT AGREE WITH THESE TERMS AND CONDITIONS, PLEASE DO NOT ACCESS THIS APP.
                             </p>
                             <p>
-                                UNDER NO CIRCUMSTANCES WILL BESTOWQR BE LIABLE FOR ANY LOST PROFITS, LOST OPPORTUNITY OR ANY INDIRECT, CONSEQUENTIAL, INCIDENTAL, SPECIAL, PUNITIVE, 
-                                OR EXEMPLARY DAMAGES ARISING OUT OF ANY USE OF OR INABILITY TO USE THIS APPLICATION OR ANY PORTION THEREOF, REGARDLESS OF WHETHER BESTOWQR HAS BEEN APPRISED OF 
+                                UNDER NO CIRCUMSTANCES WILL QRCubby BE LIABLE FOR ANY LOST PROFITS, LOST OPPORTUNITY OR ANY INDIRECT, CONSEQUENTIAL, INCIDENTAL, SPECIAL, PUNITIVE, 
+                                OR EXEMPLARY DAMAGES ARISING OUT OF ANY USE OF OR INABILITY TO USE THIS APPLICATION OR ANY PORTION THEREOF, REGARDLESS OF WHETHER LINKSACK HAS BEEN APPRISED OF 
                                 THE LIKELIHOOD OF SUCH DAMAGES OCCURRING AND REGARDLESS OF THE FORM OF ACTION, WHETHER IN CONTRACT, WARRANTY, TORT, (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE.
                             </p>
-                            <p>Copyright &copy; 2023. BESTOWQR</p>
+                            <p>Copyright &copy; 2023. QRCubby</p>
                             </div>
                         </div>
                         <div class="modal-footer">
