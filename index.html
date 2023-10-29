@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <!-- QRCubby APP PROTOTYPE : 2023 -->
-        <title>QRCubby Beta0.04</title>
+        <!-- ShareYolo APP PROTOTYPE : 2023 -->
+        <title>ShareYolo Beta0.01</title>
         <meta charset="utf-8">
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -42,9 +42,10 @@
              */
              const APP_GLOBALS_CONFIG = {
                 linkList: {},
+                linkListByType: {},
                 agreement: 'no',
-                storName: 'QRCubbyAppBeta004',
-                userName: 'QRCubby beta0.04',
+                storName: 'ShareYoloAppBeta001',
+                userName: 'ShareYolo beta0.01',
                 userImage: 'images/profile.png',
                 linkTypes: {
                     'uncategorized':{'label':'Links','color':'#efadce'},
@@ -53,7 +54,7 @@
                     'referral':{'label':'Referral codes','color':'#cff4fc'},
                     'social-media':{'label':'Social media','color':'#9aa2d8'},
                     'shopping':{'label':'Shopping','color':'#b29ad8'}
-                }            
+                }
             };
         </script>
     </head>
@@ -80,8 +81,8 @@
                                 <div class="my-4">
                                     <div class="text-center fs-6">
                                         <p>
-                                            QRCubby is the quick and easy way to capture QR codes to store and share! 
-                                            <span id="instructions">QRCubby also allows you to store and share your favorite links to ads, invites or coupons!</span>
+                                            ShareYolo is the quick and easy way to capture QR codes to store and share! 
+                                            <span id="instructions">Share payment links, referral codes, and more!</span>
                                         </p>
                                     </div>
                                 </div>
@@ -238,24 +239,28 @@
                             <form>
                                 <input type="hidden" name="id" id="form-link-id" value="" />
 
-                                <label for="form-link-link" class="form-label">Link</label>
-                                <div class="input-group mb-3">
-                                    <input type="text" id="form-link-link" class="form-control" placeholder="Link" aria-label="Recipient's username" aria-describedby="button-addon2">
-                                    <button id="form-link-paste-button" class="btn btn-outline-secondary" type="button" id="button-addon2">Paste</button>
-                                </div>
-
-
-                                <label for="form-link-description" class="form-label">Link text description</label>
-                                <input type="text" class="form-control mb-3" id="form-link-description" placeholder="Description" />
                                 
-                                <label for="form-link-title" class="form-label">Title or Headline</label>
-                                <input type="text" class="form-control mb-3" id="form-link-title" placeholder="Title" />
-                                
-                                <label for="form-link-type" class="form-label">Type of link</label>
-                                <select 
-                                class="form-select mb-3" id="form-link-type">
-                                    <option selected>Select a Type</option>
-                                </select>
+                                    
+                                    <div class="input-group mb-3">
+                                        <input type="text" id="form-link-link" class="form-control" placeholder="Link" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                        <button id="form-link-paste-button" class="btn btn-outline-secondary" type="button" id="button-addon2">Paste</button>
+
+                                    </div>
+
+                                    <button id="form-autofill-button" type="button" class="btn btn-secondary w-100" disabled="disabled">Autofill form</button>
+                                    <hr class="my-4"/>
+                                   
+                                    <label for="form-link-description" class="form-label">Link text description</label>
+                                    <input type="text" class="form-control mb-3" id="form-link-description" placeholder="Description" />
+                                    
+                                    <label for="form-link-title" class="form-label">Title or Headline</label>
+                                    <input type="text" class="form-control mb-3" id="form-link-title" placeholder="Title" />
+                                    
+                                    <label for="form-link-type" class="form-label">Type of link</label>
+                                    <select 
+                                    class="form-select mb-3" id="form-link-type">
+                                        <option selected>Select a Type</option>
+                                    </select>
                             </form>
                         </div>
                         <div class="modal-footer">
@@ -301,7 +306,7 @@
                                     <i class="gg-smartphone m-auto"></i><br>
                                     Add to Home Screen</h3>
                                 <p>To install the app, you need to add this website to your Home screen.</p>
-                                <p>In your Safari browser menu, tap the Share icon and choose <b>Add to Home Screen</b> in the options. Then open the QRCubby app on your home screen.</p>
+                                <p>In your Safari browser menu, tap the Share icon and choose <b>Add to Home Screen</b> in the options. Then open the ShareYolo app on your home screen.</p>
                             </div>
                         </div>
                     </div>
@@ -325,11 +330,11 @@
                                 IF YOU DO NOT AGREE WITH THESE TERMS AND CONDITIONS, PLEASE DO NOT ACCESS THIS APP.
                             </p>
                             <p>
-                                UNDER NO CIRCUMSTANCES WILL QRCubby BE LIABLE FOR ANY LOST PROFITS, LOST OPPORTUNITY OR ANY INDIRECT, CONSEQUENTIAL, INCIDENTAL, SPECIAL, PUNITIVE, 
+                                UNDER NO CIRCUMSTANCES WILL ShareYolo BE LIABLE FOR ANY LOST PROFITS, LOST OPPORTUNITY OR ANY INDIRECT, CONSEQUENTIAL, INCIDENTAL, SPECIAL, PUNITIVE, 
                                 OR EXEMPLARY DAMAGES ARISING OUT OF ANY USE OF OR INABILITY TO USE THIS APPLICATION OR ANY PORTION THEREOF, REGARDLESS OF WHETHER LINKSACK HAS BEEN APPRISED OF 
                                 THE LIKELIHOOD OF SUCH DAMAGES OCCURRING AND REGARDLESS OF THE FORM OF ACTION, WHETHER IN CONTRACT, WARRANTY, TORT, (INCLUDING NEGLIGENCE), STRICT LIABILITY, OR OTHERWISE.
                             </p>
-                            <p>Copyright &copy; 2023. QRCubby</p>
+                            <p>Copyright &copy; 2023. ShareYolo</p>
                             </div>
                         </div>
                         <div class="modal-footer">

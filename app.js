@@ -36,9 +36,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
 
 function isURL(str) {
-    var urlRegex = '^(?!mailto:)(?:(?:http|https|ftp)://)(?:\\S+(?::\\S*)?@)?(?:(?:(?:[1-9]\\d?|1\\d\\d|2[01]\\d|22[0-3])(?:\\.(?:1?\\d{1,2}|2[0-4]\\d|25[0-5])){2}(?:\\.(?:[0-9]\\d?|1\\d\\d|2[0-4]\\d|25[0-4]))|(?:(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)(?:\\.(?:[a-z\\u00a1-\\uffff0-9]+-?)*[a-z\\u00a1-\\uffff0-9]+)*(?:\\.(?:[a-z\\u00a1-\\uffff]{2,})))|localhost)(?::\\d{2,5})?(?:(/|\\?|#)[^\\s]*)?$';
-    var url = new RegExp(urlRegex, 'i');
-    return str.length < 2083 && url.test(str);
+    if(/^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/g.test(str)) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 
@@ -539,7 +541,7 @@ function getTitleFromUrl(txt){
         let hostname = domain.hostname;
         let hostparts = hostname.split('.');
 
-        
+
         if ( hostparts.length > 1 ) {
             hostparts.pop();
         }
@@ -566,15 +568,41 @@ function setupLinkAddFormModal(){
     const linkField = document.getElementById('form-link-link');
     const descField = document.getElementById('form-link-description');
     const pasteBttn = document.getElementById('form-link-paste-button');
+    const afillBttn = document.getElementById('form-autofill-button');
     const titleField = document.getElementById('form-link-title');
     
+    function setAfillBttn(){
+        if ( isURL(linkField.value) || linkField.value.length > 5 ) {
+            afillBttn.disabled = false;
+        } else {
+            afillBttn.disabled = true;
+        }
+    }
+
+    function autofill(text){
+        descField.value = text;
+        titleField.value = getTitleFromUrl(text);
+    }
+
+    linkField.addEventListener('keyup', (event)=>{
+        
+        if (afillBttn) {
+            setAfillBttn();
+        }
+    });
+
     pasteBttn.addEventListener('click', (event)=>{
 
         getClipboardContent().then((clipText)=>{
             linkField.value = clipText;
-            descField.value = clipText;
-            titleField.value = getTitleFromUrl(clipText);
+            autofill(clipText);
+            setAfillBttn();
         });
+    });
+
+    afillBttn.addEventListener('click', (event)=>{
+
+        autofill(linkField.value);
     });
 
     for (let key in linkTypes) {
@@ -829,7 +857,7 @@ function renderLinkList(){
     let listTypes = {};
     let listCount = 0;
     
-    //build listsTypes
+    //build listTypes
     for (let item of Object.values(APP_GLOBALS.linkList)) {
         const typeName = item.type || 'uncategorized';
 
@@ -844,6 +872,9 @@ function renderLinkList(){
         listTypes[typeName].list.push(item);
         listCount += 1;
     }
+
+    //record in cache
+    APP_GLOBALS.linkListByType = listTypes;
 
     if ( listCount === 0 ) {
         //display instructions
@@ -860,15 +891,67 @@ function renderLinkList(){
             if (accordionBody) {
                 const emptyMessage = accordionBody.querySelector('.category-empty-message');
                 emptyMessage.remove();
+                
                 const listElement = getListElement(listTypes[key]);
                 accordionBody.prepend(listElement);
 
+                const shareAllButton = getShareAllElement(key);
+                accordionBody.appendChild(shareAllButton);
             }
         }
     }
 }
 
+function getShareAllElement(category){
 
+    const element = document.createElement('BUTTON');
+    
+    element.innerText = 'Share all';
+    element.className = 'btn btn-light w-100 fs-5 mt-2';
+
+    element.addEventListener('click', ()=>{
+        shareAllByType(category);
+    })
+
+    return element;
+}
+
+async function shareAllByType(category){
+    
+    const dataByType = APP_GLOBALS.linkListByType[category];
+
+    const headline = dataByType.label;
+
+    const list = dataByType.list;
+
+    let output = headline;
+
+    const data = {
+        text: '', //message body
+        title : '', //link text
+        url: '' //link href
+    };
+    
+    if ( list.length === 1 ) {
+        //share 1 link
+        data.title = list[0].link;
+        data.url = list[0].link;
+    } else {
+        //share multiple
+        output += '\r\n----------';
+        list.forEach((item)=>{
+            output += '\n' + item.title + ': ' + item.link;
+        })
+        data.text = output;
+    }
+  
+    try {
+        await navigator.share(data);
+    }
+    catch(e) {
+        console.warn('share all error', e);
+    }
+}
 
 
 
