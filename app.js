@@ -813,6 +813,15 @@ function renderLinkAccordions(){
         accordionItemHeaderButton.innerText = linkTypes[key].label;
         accordionItemHeaderButton.style.backgroundColor = linkTypes[key].color;
 
+        if (linkTypes[key].icon) {
+            const iconContainer = document.createElement('span');
+            iconContainer.className = 'accordion-icon';
+            const icon = document.createElement('i');
+            icon.className = linkTypes[key].icon;
+            iconContainer.appendChild(icon);
+            accordionItemHeaderButton.prepend(iconContainer);
+        }
+
         const accordionItemDrawer = document.createElement('DIV');
         accordionItemDrawer.className = 'accordion-collapse collapse';
         accordionItemDrawer.id = itemId;
@@ -924,7 +933,7 @@ async function shareAllByType(category){
 
     const list = dataByType.list;
 
-    let output = headline;
+    let output = '';
 
     const data = {
         text: '', //message body
@@ -938,9 +947,8 @@ async function shareAllByType(category){
         data.url = list[0].link;
     } else {
         //share multiple
-        output += '\r\n----------';
         list.forEach((item)=>{
-            output += '\n' + item.title + ': ' + item.link;
+            output += '\n' + item.link;
         })
         data.text = output;
     }

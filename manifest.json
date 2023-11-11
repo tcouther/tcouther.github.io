@@ -1,6 +1,6 @@
 {
-    "name": "ShareYolo",
-    "short_name": "ShareYolo",
+    "name": "LinkyBucket",
+    "short_name": "LinkyBucket",
     "start_url": "index.html",
     "display": "standalone",
     "background_color": "#111111",
