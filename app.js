@@ -58,6 +58,7 @@ function setAppGlobals() {
     APP_GLOBALS.linkList = data.linkList;
     APP_GLOBALS.userImage = data.userImage;
     APP_GLOBALS.linkTypes = data.linkTypes;
+    APP_GLOBALS.theme = data.theme;
 }
 
 
@@ -209,6 +210,7 @@ function renderDetailPageOverlay(id){
     //hydrate data
     detailHeadline.innerText = data.title;
     detailImg.src = data.code;
+    detailImg.alt = "qr code for sharing a link to " + data.title;
 
     if (isURL(data.link)) {
         detailLink.href = data.link;
@@ -769,7 +771,7 @@ function lock(){
     */
 function renderAddButton(container,data){
     let button = document.createElement('BUTTON');
-    button.className = 'btn btn-light w-100 fs-5 mt-2 ';
+    button.className = 'btn btn-secondary w-100 fs-5 mt-2 ';
     button.innerText = 'Add to ' + data.label + ' +';
 
     button.addEventListener('click',()=>{
@@ -811,7 +813,7 @@ function renderLinkAccordions(){
         accordionItemHeaderButton.setAttribute('aria-expanded','false');
         accordionItemHeaderButton.setAttribute('aria-controls',itemId);
         accordionItemHeaderButton.innerText = linkTypes[key].label;
-        accordionItemHeaderButton.style.backgroundColor = linkTypes[key].color;
+        //accordionItemHeaderButton.style.backgroundColor = linkTypes[key].color;
 
         if (linkTypes[key].icon) {
             const iconContainer = document.createElement('span');
@@ -827,7 +829,7 @@ function renderLinkAccordions(){
         accordionItemDrawer.id = itemId;
         accordionItemDrawer.setAttribute('aria-labelledby',itemHeadlineId);
         accordionItemDrawer.dataset.bsParent = `#${containerId}`;
-        accordionItemDrawer.style.backgroundColor = linkTypes[key].color;
+        //accordionItemDrawer.style.backgroundColor = linkTypes[key].color;
 
         const accordionItemBody = document.createElement('DIV');
         accordionItemBody.className = 'accordion-body p-1';
@@ -916,7 +918,7 @@ function getShareAllElement(category){
     const element = document.createElement('BUTTON');
     
     element.innerText = 'Share all';
-    element.className = 'btn btn-light w-100 fs-5 mt-2';
+    element.className = 'btn btn-secondary w-100 fs-5 mt-2';
 
     element.addEventListener('click', ()=>{
         shareAllByType(category);
@@ -961,12 +963,42 @@ async function shareAllByType(category){
     }
 }
 
+function setTheme(){
+    //set UI theme
+    const mode = APP_GLOBALS.theme || 'light';
+    document.documentElement.setAttribute('data-bs-theme', mode);
+}
+
+function setThemeControl(){
+
+    //set Controls event
+    const control = document.getElementById('dark-mode-toggle');
+
+    //set Controls sate
+    if ( APP_GLOBALS.theme === 'dark' ) {
+        control.checked = 'checked';
+    }
+
+    //set Constols event
+    control.addEventListener('click',(event)=>{
+        if ( event.target.checked ) {
+            APP_GLOBALS.theme = 'dark';
+        } else {
+            APP_GLOBALS.theme = 'light';
+        }
+        updateSavedData();
+        setTheme();
+    });
+}
 
 
-
+document.addEventListener("DOMContentLoaded", () => {
+    setThemeControl();
+});
 
 //initialize
 setAppGlobals();
+setTheme();
 setPages();
 setupAgreementModal();
 

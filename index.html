@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <!-- LinkyBucket APP PROTOTYPE : 2023 -->
-        <title>LinkyBucket Beta0.01</title>
+        <title>LinkyBucket</title>
         <meta charset="utf-8">
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -45,23 +45,16 @@
                 linkListByType: {},
                 agreement: 'no',
                 storName: 'linkybucketAppBeta001',
-                userName: 'LinkyBucket beta0.01',
+                userName: 'LinkyBucket',
                 userImage: 'images/profile.png',
+                theme: 'light',
                 linkTypes: {
-                    'uncategorized':{'label':'Links','color':'#ffffff','icon':'gg-link'},
-                    'news':{'label':'News Articles','color':'#ffffff','icon':'gg-ereader'},
-                    'payment':{'label':'Payments','color':'#ffffff','icon':'gg-dollar'},
-                    'referral':{'label':'Referral codes','color':'#ffffff','icon':'gg-list-tree'},
-                    'social-media':{'label':'Social media','color':'#ffffff','icon':'gg-comment'},
-                    'shopping':{'label':'Shopping','color':'#ffffff','icon':'gg-shopping-cart'}
-                },
-                linkTypes2: {
-                    'uncategorized':{'label':'Links','color':'#efadce'},
-                    'news':{'label':'News Articles','color':'#ffdd9c'},
-                    'payment':{'label':'Payments','color':'#d1e7dd'},
-                    'referral':{'label':'Referral codes','color':'#cff4fc'},
-                    'social-media':{'label':'Social media','color':'#9aa2d8'},
-                    'shopping':{'label':'Shopping','color':'#b29ad8'}
+                    'uncategorized':{'label':'Links','color':'#ffffff','highlight':'#efadce','icon':'gg-link'},
+                    'news':{'label':'News articles','color':'#ffffff','highlight':'#ffdd9c','icon':'gg-ereader'},
+                    'payment':{'label':'Payments','color':'#ffffff','highlight':'#d1e7dd','icon':'gg-dollar'},
+                    'referral':{'label':'Referral codes','color':'#ffffff','highlight':'#cff4fc','icon':'gg-list-tree'},
+                    'social-media':{'label':'Social media','color':'#ffffff','highlight':'#9aa2d8','icon':'gg-comment'},
+                    'shopping':{'label':'Shopping','color':'#ffffff','highlight':'#b29ad8','icon':'gg-shopping-cart'}
                 }
             };
         </script>
@@ -97,6 +90,7 @@
                                 
                             </div>
                         </div>
+
                     </section>
 
                     <!-- Link List -->
@@ -166,6 +160,10 @@
                             <p>
                                 Update and manage your user profile preferences to customize your user experience.
                             </p>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="dark-mode-toggle">
+                                <label class="form-check-label" for="dark-mode-toggle">Toggle dark mode</label>
+                            </div>
                             <ul class="mt-3 list-group">
                                 <li 
                                 class="list-group-item d-flex justify-content-between cursor-pointer" 
@@ -186,6 +184,10 @@
                                     <label>Delete all data</label>
                                 </li>
                             </ul>
+                            
+                            <div class="alert alert-info mt-3" role="alert">
+                                Version: LinkyBucket Beta0.01
+                            </div>
                         </div>
                     </div>
                 </div>
