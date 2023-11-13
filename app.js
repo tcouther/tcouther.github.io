@@ -36,6 +36,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
 
 function isURL(str) {
+    str = str.replaceAll('$','');
+    str = str.replaceAll('@','');
+
     const pattern = new RegExp(
     '^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
@@ -566,6 +569,8 @@ function getTitleFromDomain(domain){
 
     //popular domains are titled here
     let title = domain;
+
+    console.log(domain);
 
     switch(domain) {
         case 'ts.la':
