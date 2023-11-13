@@ -36,11 +36,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
 
 function isURL(str) {
-    if(/^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/g.test(str)) {
-        return true;
-    } else {
-        return false;
-    }
+    const pattern = new RegExp(
+    '^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$', // fragment locator
+    'i'
+    );
+    return pattern.test(str);
 }
 
 
@@ -536,7 +541,7 @@ async function getClipboardContent(){
     * function getHostName
     * returns hostname from domain name
     */
-function getTitleFromUrl(txt){
+function getTitleFromUrl2(txt){
 
     if ( isURL(txt) ) {
         let domain = (new URL(txt));
@@ -554,6 +559,49 @@ function getTitleFromUrl(txt){
     }
 
     return (txt && txt.length > 1) ? txt.replace(/^./, str => str.toUpperCase()) : txt;
+}
+
+
+function getTitleFromDomain(domain){
+
+    //popular domains are titled here
+    let title = domain;
+
+    switch(domain) {
+        case 'ts.la':
+            title = 'Tesla';
+            break;
+        case 'cash.app':
+            title = 'CashApp';
+            break;
+        case 'venmo.com':
+            title = 'Venmo';
+            break;
+        case 'paypal.me':
+            title = 'Paypal';
+            break;
+        default:
+          // code block
+      }
+    
+    return title;
+}
+
+
+function getTitleFromUrl(url){
+
+    if ( isURL(url) ) {
+        const urlParts = new URL(url).hostname.split('.');
+
+        const domain = urlParts
+            .slice(0)
+            .slice(-(urlParts.length === 4 ? 3 : 2))
+            .join('.');
+
+        return getTitleFromDomain(domain);
+    } else {
+        return '';
+    }
 }
 
 
@@ -581,9 +629,11 @@ function setupLinkAddFormModal(){
         }
     }
 
-    function autofill(text){
+    async function autofill(text){
         descField.value = text;
         titleField.value = getTitleFromUrl(text);
+
+
     }
 
     linkField.addEventListener('keyup', (event)=>{
