@@ -30,7 +30,6 @@
 }
 
 [data-bs-theme=dark] body,
-[data-bs-theme=dark] .accordion-body,
 [data-bs-theme=dark] .modal-content {
   color: var(--bs-light);
   background-color: var(--bs-dark);
@@ -43,9 +42,10 @@
     border-top: 1px solid var(--bs-gray-700);
 }
 
-[data-bs-theme=dark] .accordion-button:not(.collapsed) {
+[data-bs-theme=dark] .accordion-button:not(.collapsed),
+[data-bs-theme=dark] .accordion-body {
     color: var(--bs-light);
-    background-color: var(--bs-dark);
+    background-color: #111;
 }
 
 [data-bs-theme=dark] .accordion-button {
