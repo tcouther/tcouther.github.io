@@ -158,12 +158,22 @@
                         </div>
                         <div class="modal-body">
                             <p>
-                                Update and manage your user profile preferences to customize your user experience.
+                                Update and manage your preferences to customize the app.
                             </p>
+
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4>Theme</h4>
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" role="switch" id="dark-mode-toggle">
                                 <label class="form-check-label" for="dark-mode-toggle">Toggle dark mode</label>
                             </div>
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Profile</h4>
                             <ul class="mt-3 list-group">
                                 <li 
                                 class="list-group-item d-flex justify-content-between cursor-pointer" 
@@ -177,14 +187,40 @@
                                 data-bs-target="#formUserNameModal">
                                     <label>Edit profile name</label>
                                 </li>
-                                <li 
-                                class="list-group-item d-flex justify-content-between cursor-pointer" 
-                                data-bs-toggle="modal" 
-                                data-bs-target="#formDeleteAllModal">
-                                    <label>Delete all data</label>
-                                </li>
                             </ul>
-                            
+                                </div>
+                            </div>
+
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h4>Manage Data</h4>
+
+                                    <ul class="mt-3 list-group">
+                                        <li 
+                                        class="list-group-item d-flex justify-content-between cursor-pointer" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#formModalImport">
+                                            <label>Import link list file</label>
+                                        </li>
+                                        <li 
+                                        class="list-group-item d-flex justify-content-between cursor-pointer">
+                                            <label>
+                                                Export link list file 
+                                                <button id="export-data-button" class="mx-2 btn btn-sm btn-secondary">Download</button>
+                                            </label> 
+                                            
+                                            <div id="button-export-file"></div>
+                                        </li>
+                                        <li 
+                                        class="list-group-item d-flex justify-content-between cursor-pointer" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#formDeleteAllModal">
+                                            <label>Delete all data</label>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
                             <div class="alert alert-info mt-3" role="alert">
                                 Version: LinkyBucket Beta0.01
                             </div>
@@ -304,6 +340,24 @@
                 </div>
             </div>
 
+<!-- Modal Form Import -->
+<div class="modal fade" id="formModalImport" tabindex="-1" aria-labelledby="formeImportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="formImportModalLabel">Import data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p><input class="form-control" type="file" id="importfilepicker"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary w-100" id="importfilepickerbtn">Import Data</button>
+                <button type="button" class="btn btn-secondary modal-close-button w-100" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- Modal PWA Install -->
             <div class="modal fade modal-fullscreen" id="pwaModal" tabindex="-1" aria-labelledby="pwaModalLabel" aria-hidden="true">

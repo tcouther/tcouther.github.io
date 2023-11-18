@@ -10,6 +10,15 @@
     border: 15px solid #FFF;
 }
 
+[data-bs-theme=dark] .card {
+    background-color: var(--bs-gray-800);
+}
+
+[data-bs-theme=dark] .list-group-item {
+    color: var(--bs-light);
+    background-color: transparent;
+}
+
 [data-bs-theme=dark] .modal-backdrop.show {
     opacity: .85;
 }
@@ -24,8 +33,7 @@
 
 [data-bs-theme=dark] .detail-img,
 [data-bs-theme=dark] .share-controls,
-[data-bs-theme=dark] .btn-close,
-[data-bs-theme=dark] .list-group-item {
+[data-bs-theme=dark] .btn-close {
     filter: invert(95%);
 }
 
@@ -371,6 +379,7 @@ top: 8px
 .profile-photo-container .photo-img {
     display: none;
     max-width: 100%;
+    border-radius: 10px;
 }
 .profile-photo-container.has-image {
     min-height: 10px;
