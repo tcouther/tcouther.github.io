@@ -227,9 +227,7 @@ function handleRemoveClick(event,id){
     event.preventDefault();
     event.stopPropagation();
 
-    delete APP_GLOBALS.linkList[id];
-    renderLinkAccordions();
-    updateSavedData();
+    renderRemoveConfirmModal(id);
 }
 
 /**
@@ -703,6 +701,16 @@ function getTitleFromUrl(url){
     * function setupFormModal
     * Setup events for the modal
     */
+function setupLinkRemoveConfirmModal(){
+
+    APP_GLOBALS.removeConfirmModalInstance = new bootstrap.Modal(document.getElementById('removeConfirm'), {keyboard: false});
+}
+
+
+/**
+    * function setupFormModal
+    * Setup events for the modal
+    */
 function setupLinkAddFormModal(){
 
     APP_GLOBALS.formModalInstance = new bootstrap.Modal(document.getElementById('formModal'), {keyboard: false});
@@ -809,6 +817,35 @@ function renderFormModal(id,typeId){
     const editFormModal = document.getElementById('formModal');
     APP_GLOBALS.formModalInstance.show(editFormModal);
 }
+
+
+
+/**
+    * function renderRemoveConfirmModal
+    * Render the modal and assign events
+    * @param id {string}
+    */
+function renderRemoveConfirmModal(id){
+
+    const modal = document.getElementById('removeConfirm');
+    const titleEl = document.getElementById('removeConfirmTitle');
+    const btnEl = document.getElementById('removeConfirmButton');
+    const closEl = modal.querySelector('.modal-close-button');
+    const item = APP_GLOBALS.linkList[id];
+
+    titleEl.innerText = item.title;
+
+    btnEl.addEventListener('click',()=>{
+        delete APP_GLOBALS.linkList[id];
+        renderLinkAccordions();
+        updateSavedData();
+        closEl.click();
+    });
+
+    //show
+    APP_GLOBALS.removeConfirmModalInstance.show(modal);
+}
+
 
 
 /**
@@ -1155,6 +1192,7 @@ renderProfileImage();
 setupUserNameModal();
 setupLinkDetailModal();
 setupLinkAddFormModal();
+setupLinkRemoveConfirmModal();
 setupFileUploadModal();
 setupFormDeleteAllModal();
 setupPWAModal();
