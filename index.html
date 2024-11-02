@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <!-- LinkyBucket APP PROTOTYPE : 2023 -->
-        <title>LinkyBucket</title>
+        <!-- LinkyBucket 11/1/2024 : APP PROTOTYPE -->
+        <title>LinkyBucket 11/1/2024</title>
         <meta charset="utf-8">
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,6 +29,8 @@
         <!-- PWA -->
         <link rel="manifest" href="manifest.json" />
 
+        <!-- jsQR: https://github.com/cozmo/jsQR?tab=readme-ov-file -->
+        <script src="jsQR.js"></script>
 
         <!-- APP CONFIG -->
         <script>
@@ -73,6 +75,25 @@
 
                                 <div id="profile-photo-container" class="profile-photo-container">
                                     <img class="photo-img mt-3" src="" alt="logo" id="user-preferences-button" data-bs-toggle="modal" data-bs-target="#listModalPreferences" />
+
+
+                                    <button id="camera-button" type="button" class="btn btn-secondary mb-3">
+                                         
+                                        <svg
+                                        width="26"
+                                        height="30"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                          <path
+                                            fill-rule="evenodd"
+                                            clip-rule="evenodd"
+                                            d="M9 3H3V9H5V5H9V3ZM3 21V15H5V19H9V21H3ZM15 3V5H19V9H21V3H15ZM19 15H21V21H15V19H19V15ZM7 7H11V11H7V7ZM7 13H11V17H7V13ZM17 7H13V11H17V7ZM13 13H17V17H13V13Z"
+                                            fill="currentColor"
+                                          />
+                                        </svg>
+                                    </button>
                                 </div>
                                 
                                 <h1 class="mt-1">
@@ -82,11 +103,16 @@
                                 <div class="my-4">
                                     <div class="text-center fs-6">
                                         <p>
-                                            LinkyBucket is the quick and easy way to capture QR codes to store and share! 
+                                            <nobr>LinkyBucket is the best app</nobr>
+                                            <br>
+                                            <nobr>for storing, organizing, </nobr>
+                                            <nobr>and sharing your links! </nobr>
                                             <span id="instructions">Share payment links, referral codes, and more!</span>
                                         </p>
                                     </div>
                                 </div>
+
+
                                 
                             </div>
                         </div>
@@ -440,6 +466,34 @@
                 open detail modal
             </button>
 
+            <!-- Modal Camera -->
+            <div class="modal fade modal-fullscreen" id="cameraModal" tabindex="-1" aria-labelledby="cameraModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="cameraModalLabel">Scan</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="video-cam">
+                                <video></video>
+                                <canvas></canvas>
+                            </div>
+                            <p id="scanned-output"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="control-panel">
+                            <button type="button" class="hide btn btn-success mx-1" id="addCodeButton">Add to Linkybucket +</button>
+
+                            <a class="hide btn btn-primary mx-1" id="navigateCodeButton" href="#" target="_blank">Visit link <span class="external-icon">&#8599;</span></a>
+
+                            <button type="button" class="btn btn-secondary mx-1 modal-close-button" data-bs-dismiss="modal">Cancel &times;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- QR Code : QR code images are created here before they are saved in APP_GLOBALS -->
             <div id="qrcode-hidden-container" class="d-none"></div>
 
@@ -448,5 +502,7 @@
         <div id="lock" style="top:0px; position:fixed; width:100vw; height:100vh; background-color:#111; opacity:0.1;"></div>
 
         <script src="app.js"></script>
+
+        
     </body>
 </html>

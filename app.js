@@ -1,8 +1,6 @@
 /**
  * WORKING PROTOTYPE
- * This code will do for now to show a proof of concept
- * After the path forward to publishing a PWA is clear,
- * we'll refactor the js code below.
+ * LinkyBucket 11/1/2024
  */
 
 //Register service worker for caching on PWA installed device
@@ -252,6 +250,179 @@ function handleDetailClick(id){
     renderDetailPageOverlay(id);
 }
 
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * function setupCameraModal
+ * Setup events for the modal
+ */
+function setupCameraModal(){
+
+  const cameraButton = document.getElementById('camera-button');
+  const modal = document.getElementById('cameraModal');
+  const addBtnEl = modal.querySelector('#addCodeButton');
+  const navBtnEl = modal.querySelector('#navigateCodeButton');
+  const closeBtnEl = modal.querySelector('.modal-close-button');
+  const videoElement = modal.querySelector('video');
+  const camerSupported = navigator.mediaDevices && navigator.mediaDevices.getUserMedia;
+
+  cameraButton.disabled = !camerSupported;
+  
+  if ( camerSupported ) {
+
+    //set button to render camera feed modal
+    cameraButton.addEventListener('click', (event)=>{
+
+        renderCameraModal();
+    });
+
+    //set camera feed modal
+    APP_GLOBALS.cameraModal = new bootstrap.Modal(modal, {keyboard: false});
+
+    //set add button in camera feed modal
+    addBtnEl.addEventListener('click', (event)=>{
+      closeBtnEl.click();
+      renderFormModal(null,'uncategorized');
+    });
+
+    navBtnEl.addEventListener('click', (event)=>{
+      closeBtnEl.click();
+    });
+
+    //close video stream and stop scanning
+    const closeVideoStream = ()=>{
+
+      if (APP_GLOBALS.scanning) {
+        clearInterval(APP_GLOBALS.scanning);
+      }
+
+      if (videoElement && APP_GLOBALS.stream && APP_GLOBALS.stream.getTracks()) {
+        videoElement.pause();
+        videoElement.src = "";
+        APP_GLOBALS.stream.getTracks()[0].stop();
+      }
+    };
+
+    //handle modal close and close video feed
+    const callbackFunc = (mutationsList, observer)=>{
+      mutationsList.forEach(mutation => {
+          if (mutation.attributeName === 'class') {
+              closeVideoStream();
+          }
+      })
+    };
+    const mutationObserver = new MutationObserver(callbackFunc);
+    mutationObserver.observe(modal, { attributes: true });
+  }
+}
+
+/**
+ * function renderCameraModal
+ * Displays the Camera Modal
+ */
+function renderCameraModal(){
+
+  //open modal
+  const modal = document.getElementById('cameraModal');
+  const closEl = modal.querySelector('.modal-close-button');
+  const video = modal.querySelector('video');
+  const canvas = modal.querySelector('canvas');
+  const context = canvas.getContext('2d');
+  const outputField = modal.querySelector('#scanned-output');
+  const addBtnEl = modal.querySelector('#addCodeButton');
+  const navBtnEl = modal.querySelector('#navigateCodeButton');
+
+  addBtnEl.classList.add('hide');
+  navBtnEl.classList.add('hide');
+
+  APP_GLOBALS.clipboard = "";
+  outputField.innerText = "Scanning for qr codes ...";
+
+  const constraints = {
+    audio: false,
+    video: {
+      //desktop for testing
+      //facingMode: 'user',
+      //mobile for production
+      facingMode: {
+        exact: 'environment'
+      }
+    }
+  };
+
+  const getDevices = async ()=>{
+
+      const devices = await navigator.mediaDevices.enumerateDevices();
+
+      return devices;
+  };
+
+  const setVideoCam = async ()=>{
+
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+
+      // Browser supports the API
+      try {
+
+        APP_GLOBALS.stream = await navigator.mediaDevices.getUserMedia(constraints);
+        
+        video.srcObject = APP_GLOBALS.stream;
+
+        video.play();
+
+        APP_GLOBALS.scanning = setInterval(() => {
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+          if ( code && code.data && code.data !== '' ) {
+            outputField.innerText = code.data;
+            APP_GLOBALS.clipboard = code.data;
+
+            if ( !code.data.includes('<script') ) {
+              addBtnEl.classList.remove('hide');
+            }
+            if ( !code.data.includes('<script') && code.data.startsWith('http') ) {
+              navBtnEl.href = code.data;
+              navBtnEl.classList.remove('hide');
+            }
+            
+          }
+        }, 200); // Adjust the interval as needed
+
+      } catch (error) {
+        console.warn('Error accessing camera:', error);
+      }
+    } else {
+
+      alert('camera not supported')
+    }
+  };
+
+  APP_GLOBALS.cameraModal.show(modal);
+
+  setVideoCam();
+}
+
+
+
+
+
+
+
+
 /**
  * function renderDetailPageOverlay
  * Displays the printer friendly detail page (actually a hidden div) 
@@ -468,6 +639,9 @@ function renderProfileName(){
     const fieldLabel = document.getElementById('user-name-label');
     fieldLabel.innerText = APP_GLOBALS.userName;
 }
+
+
+
 
 /**
  * function setupFileUploadModal
@@ -722,7 +896,7 @@ function setupLinkAddFormModal(){
     const pasteBttn = document.getElementById('form-link-paste-button');
     const afillBttn = document.getElementById('form-autofill-button');
     const titleField = document.getElementById('form-link-title');
-    
+
     function setAfillBttn(){
         if ( isURL(linkField.value) || linkField.value.length > 5 ) {
             afillBttn.disabled = false;
@@ -734,9 +908,8 @@ function setupLinkAddFormModal(){
     async function autofill(text){
         descField.value = text;
         titleField.value = getTitleFromUrl(text);
-
-
     }
+
 
     linkField.addEventListener('keyup', (event)=>{
         
@@ -801,7 +974,7 @@ function renderFormModal(id,typeId){
         idEl.value = "";
         titleEl.value = "";
         descEl.value = "";
-        linkEl.value = "";
+        linkEl.value = (APP_GLOBALS.clipboard !== '') ? APP_GLOBALS.clipboard : "";
 
         if ( typeId ) {
             typeEl.value = typeId;
@@ -1189,6 +1362,7 @@ renderProfileName();
 renderProfileImage();
 
 //setup modals and events
+setupCameraModal();
 setupUserNameModal();
 setupLinkDetailModal();
 setupLinkAddFormModal();

@@ -742,3 +742,55 @@ top: 8px
  bottom: 0
 } 
 
+.video-cam {
+	text-align: center;
+	position: relative;
+}
+.video-cam video {
+	visibility: hidden;
+	position: absolute;
+	top: 0px;
+}
+.video-cam canvas {
+	background-color: #000;
+	width:100%;
+	height:50vh;
+	margin: 10px auto;
+	border: 5px solid #CCC;
+	border-radius: 10px;
+}
+
+#camera-button {
+	position: absolute;
+	right: 20px;
+	top: 20px;
+}
+
+#scanned-output {
+	box-sizing: border-box;
+	width: 100%;
+	margin: 0px auto;
+	border: 5px solid #CCC;
+	border-radius: 10px;
+	text-align: center;
+	padding: 10px;
+}
+
+#addCodeButton {
+	flex-grow: 1;
+}
+
+.hide {
+	display: none !important;
+}
+
+.control-panel {
+	display: flex;
+    justify-content: space-around;
+    flex-grow: 1;
+    align-items: center;
+}
+
+.external-icon {
+	font-size: 0.7em;
+}
