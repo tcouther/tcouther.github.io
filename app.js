@@ -963,7 +963,8 @@ function renderFormModal(id,typeId){
     const descEl = document.getElementById('form-link-description');
     const submit = document.getElementById('form-link-submit');
     const labelEl = document.getElementById('formModalLabel');
-    
+    const afillBttn = document.getElementById('form-autofill-button');
+
     
     if ( id ) {
         //patch mode
@@ -982,7 +983,7 @@ function renderFormModal(id,typeId){
         idEl.value = "";
         titleEl.value = "";
         descEl.value = "";
-        linkEl.value = (APP_GLOBALS.clipboard !== '') ? APP_GLOBALS.clipboard : "";
+        linkEl.value = (APP_GLOBALS.clipboard && APP_GLOBALS.clipboard !== '') ? APP_GLOBALS.clipboard : "";
 
         if ( typeId ) {
             typeEl.value = typeId;
@@ -992,6 +993,13 @@ function renderFormModal(id,typeId){
 
         submit.innerText = 'Add';
         labelEl.innerText = 'Add';
+    }
+
+
+    if ( isURL(linkEl.value) || linkEl.value.length > 5 ) {
+        afillBttn.disabled = false;
+    } else {
+        afillBttn.disabled = true;
     }
 
     //show

@@ -747,17 +747,17 @@ top: 8px
 	position: relative;
 }
 .video-cam video {
-	visibility: hidden;
-	position: absolute;
-	top: 0px;
-}
-.video-cam canvas {
 	background-color: #000;
 	width:100%;
 	height:50vh;
 	margin: 10px auto;
 	border: 5px solid #CCC;
 	border-radius: 10px;
+}
+.video-cam canvas {
+	visibility: hidden;
+	position: absolute;
+	top: 0px;
 }
 
 #camera-button {
