@@ -336,7 +336,7 @@ function renderCameraModal(){
   const closEl = modal.querySelector('.modal-close-button');
   const video = modal.querySelector('video');
   const canvas = modal.querySelector('canvas');
-  const context = canvas.getContext('2d');
+  const context = canvas.getContext('2d',{ willReadFrequently: true });
   const outputField = modal.querySelector('#scanned-output');
   const addBtnEl = modal.querySelector('#addCodeButton');
   const navBtnEl = modal.querySelector('#navigateCodeButton');
@@ -355,6 +355,14 @@ function renderCameraModal(){
       //mobile for production
       facingMode: {
         exact: 'environment'
+      },
+      width: {
+        min: 400,
+        max: 400
+      },
+      height: {
+        min: 300,
+        max: 300
       }
     }
   };
