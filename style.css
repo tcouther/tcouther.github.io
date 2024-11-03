@@ -746,6 +746,7 @@ top: 8px
 	text-align: center;
 	position: relative;
 	overflow: hidden;
+	border-radius: 10px;
 }
 .video-cam video {
 	background-color: #000;

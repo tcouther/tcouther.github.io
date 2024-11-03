@@ -305,11 +305,15 @@ function setupCameraModal(){
         clearInterval(APP_GLOBALS.scanning);
       }
 
-      if (videoElement && APP_GLOBALS.stream && APP_GLOBALS.stream.getTracks()) {
+      if (videoElement) {
         videoElement.pause();
         videoElement.src = "";
+      }
+
+      if (APP_GLOBALS.stream && APP_GLOBALS.stream.getTracks()) {
         APP_GLOBALS.stream.getTracks()[0].stop();
       }
+
     };
 
     //handle modal close and close video feed
@@ -347,22 +351,25 @@ function renderCameraModal(){
   //open modal
   const modal = document.getElementById('cameraModal');
   const closEl = modal.querySelector('.modal-close-button');
-  const video = modal.querySelector('video');
-  const canvas = modal.querySelector('canvas');
-  const context = canvas.getContext('2d',{ willReadFrequently: true });
   const outputField = modal.querySelector('#scanned-output');
   const addBtnEl = modal.querySelector('#addCodeButton');
   const navBtnEl = modal.querySelector('#navigateCodeButton');
+  const videoDisplay = modal.querySelector('#video-display');
+  const video = document.createElement('video');
+  const canvas = document.createElement('canvas');
 
-
-
-
+  videoDisplay.innerHTML = '';
+  videoDisplay.appendChild(video);
+  videoDisplay.appendChild(canvas);
 
   addBtnEl.classList.add('hide');
   navBtnEl.classList.add('hide');
 
   APP_GLOBALS.clipboard = "";
   outputField.innerText = "Scanning for qr codes ...";
+
+
+  const context = canvas.getContext('2d',{ willReadFrequently: true });
 
   const constraints = { 
     audio: false,
@@ -411,7 +418,7 @@ function renderCameraModal(){
               }
             }
 
-          }, 200);
+          }, 150);
 
         });
 
