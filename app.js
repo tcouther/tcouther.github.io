@@ -308,6 +308,7 @@ function setupCameraModal(){
       if (videoElement) {
         videoElement.pause();
         videoElement.src = "";
+        videoElement.remove();
       }
 
       if (APP_GLOBALS.stream && APP_GLOBALS.stream.getTracks()) {
@@ -355,11 +356,9 @@ function renderCameraModal(){
   const addBtnEl = modal.querySelector('#addCodeButton');
   const navBtnEl = modal.querySelector('#navigateCodeButton');
   const videoDisplay = modal.querySelector('#video-display');
-  const video = document.createElement('video');
   const canvas = document.createElement('canvas');
 
   videoDisplay.innerHTML = '';
-  videoDisplay.appendChild(video);
   videoDisplay.appendChild(canvas);
 
   addBtnEl.classList.add('hide');
@@ -385,6 +384,9 @@ function renderCameraModal(){
 
         // Use facingMode: environment to attemt to get the front camera on phones
         navigator.mediaDevices.getUserMedia(constraints).then((stream)=>{
+
+          const video = document.createElement('video');
+          videoDisplay.appendChild(video);
 
           APP_GLOBALS.stream = stream;
           video.srcObject = stream;
