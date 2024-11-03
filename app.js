@@ -396,11 +396,6 @@ function renderCameraModal(){
           video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
           video.play();
 
-          if (stream) {
-            alert('video stream started');
-          }
-          
-
           APP_GLOBALS.scanning = setInterval(() => {
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
@@ -443,6 +438,7 @@ function renderCameraModal(){
   APP_GLOBALS.cameraModal.show(modal);
 
   setTimeout(()=>{
+    //Ensure modal ui has rendered before starting stream
     setVideoCam();
   },1200);
 }
