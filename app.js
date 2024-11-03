@@ -363,7 +363,6 @@ function renderCameraModal(){
   const canvas = document.createElement('canvas');
 
   videoDisplay.innerHTML = '';
-  videoDisplay.appendChild(canvas);
 
   addBtnEl.classList.add('hide');
   navBtnEl.classList.add('hide');
@@ -371,7 +370,7 @@ function renderCameraModal(){
   APP_GLOBALS.clipboard = "";
   outputField.innerText = "Scanning for qr codes ...";
 
-
+  videoDisplay.appendChild(canvas);
   const context = canvas.getContext('2d',{ willReadFrequently: true });
 
   const constraints = { 
@@ -396,6 +395,11 @@ function renderCameraModal(){
           video.srcObject = stream;
           video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
           video.play();
+
+          if (stream) {
+            alert('video stream started');
+          }
+          
 
           APP_GLOBALS.scanning = setInterval(() => {
             canvas.width = video.videoWidth;
@@ -429,11 +433,10 @@ function renderCameraModal(){
         });
 
       } catch (error) {
-        console.warn('Error accessing camera:', error);
+        videoDisplay.innerHTML = 'Error accessing camera: ' + error ;
       }
     } else {
-
-      alert('camera not supported')
+      videoDisplay.innerHTML = 'Camera not supported' ;
     }
   };
 
