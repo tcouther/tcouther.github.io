@@ -750,10 +750,8 @@ top: 8px
 .video-cam video {
 	background-color: #000;
 	width:100%;
-	height:50vh;
+	height:45vh;
 	margin: 10px auto;
-	border: 5px solid #CCC;
-	border-radius: 10px;
 }
 .video-cam canvas {
 	position: absolute;
@@ -771,7 +769,7 @@ top: 8px
 #scanned-output {
 	box-sizing: border-box;
 	width: 100%;
-	margin: 0px auto;
+	margin: 10px auto 0px;
 	border: 5px solid #CCC;
 	border-radius: 10px;
 	text-align: center;
