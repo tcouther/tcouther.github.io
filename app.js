@@ -312,7 +312,11 @@ function setupCameraModal(){
       }
 
       if (APP_GLOBALS.stream && APP_GLOBALS.stream.getTracks()) {
-        APP_GLOBALS.stream.getTracks()[0].stop();
+        const tracks = APP_GLOBALS.stream.getTracks();
+
+        tracks.forEach((track)=>{
+          track.stop();
+        });
       }
 
     };
