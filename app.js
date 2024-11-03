@@ -440,7 +440,7 @@ function renderCameraModal(){
   setTimeout(()=>{
     //Ensure modal ui has rendered before starting stream
     setVideoCam();
-  },1200);
+  },700);
 }
 
 
