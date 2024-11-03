@@ -404,10 +404,10 @@ function renderCameraModal(){
 
               if ( !code.data.includes('<script') ) {
                 addBtnEl.classList.remove('hide');
-              }
-              if ( !code.data.includes('<script') && code.data.startsWith('http') ) {
-                navBtnEl.href = code.data;
-                navBtnEl.classList.remove('hide');
+                if ( code.data.startsWith('http') ) {
+                  navBtnEl.href = code.data;
+                  navBtnEl.classList.remove('hide');
+                }
               }
             }
 
