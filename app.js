@@ -326,6 +326,19 @@ function setupCameraModal(){
 }
 
 /**
+ * function drawLine
+ * Displays outlines in canvas
+ */
+function drawLine(ctx, begin, end, color) {
+  ctx.beginPath();
+  ctx.moveTo(begin.x, begin.y);
+  ctx.lineTo(end.x, end.y);
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = color;
+  ctx.stroke();
+}
+
+/**
  * function renderCameraModal
  * Displays the Camera Modal
  */
@@ -341,74 +354,66 @@ function renderCameraModal(){
   const addBtnEl = modal.querySelector('#addCodeButton');
   const navBtnEl = modal.querySelector('#navigateCodeButton');
 
+
+
+
+
   addBtnEl.classList.add('hide');
   navBtnEl.classList.add('hide');
 
   APP_GLOBALS.clipboard = "";
   outputField.innerText = "Scanning for qr codes ...";
 
-  const constraints = {
+  const constraints = { 
     audio: false,
-    video: {
-      //desktop for testing
-      //facingMode: 'user',
-      //mobile for production
-      facingMode: {
-        exact: 'environment'
-      },
-      width: {
-        min: 400,
-        max: 400
-      },
-      height: {
-        min: 300,
-        max: 300
-      }
-    }
-  };
-
-  const getDevices = async ()=>{
-
-      const devices = await navigator.mediaDevices.enumerateDevices();
-
-      return devices;
+    video: { facingMode: "environment" } 
   };
 
   const setVideoCam = async ()=>{
 
+    // If browser supports the API
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
 
-      // Browser supports the API
       try {
 
-        APP_GLOBALS.stream = await navigator.mediaDevices.getUserMedia(constraints);
-        
-        video.srcObject = APP_GLOBALS.stream;
+        // Use facingMode: environment to attemt to get the front camera on phones
+        navigator.mediaDevices.getUserMedia(constraints).then((stream)=>{
 
-        video.play();
+          APP_GLOBALS.stream = stream;
+          video.srcObject = stream;
+          video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
+          video.play();
 
-        APP_GLOBALS.scanning = setInterval(() => {
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          APP_GLOBALS.scanning = setInterval(() => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-          const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-          const code = jsQR(imageData.data, imageData.width, imageData.height);
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
 
-          if ( code && code.data && code.data !== '' ) {
-            outputField.innerText = code.data;
-            APP_GLOBALS.clipboard = code.data;
+            if ( code && code.data && code.data !== '' ) {
 
-            if ( !code.data.includes('<script') ) {
-              addBtnEl.classList.remove('hide');
+              outputField.innerText = code.data;
+              APP_GLOBALS.clipboard = code.data;
+
+              drawLine(context, code.location.topLeftCorner, code.location.topRightCorner, "#FF3B58");
+              drawLine(context, code.location.topRightCorner, code.location.bottomRightCorner, "#FF3B58");
+              drawLine(context, code.location.bottomRightCorner, code.location.bottomLeftCorner, "#FF3B58");
+              drawLine(context, code.location.bottomLeftCorner, code.location.topLeftCorner, "#FF3B58");
+
+              if ( !code.data.includes('<script') ) {
+                addBtnEl.classList.remove('hide');
+              }
+              if ( !code.data.includes('<script') && code.data.startsWith('http') ) {
+                navBtnEl.href = code.data;
+                navBtnEl.classList.remove('hide');
+              }
             }
-            if ( !code.data.includes('<script') && code.data.startsWith('http') ) {
-              navBtnEl.href = code.data;
-              navBtnEl.classList.remove('hide');
-            }
-            
-          }
-        }, 200); // Adjust the interval as needed
+
+          }, 200);
+
+        });
 
       } catch (error) {
         console.warn('Error accessing camera:', error);
@@ -838,8 +843,6 @@ function getTitleFromDomain(domain){
 
     //popular domains are titled here
     let title = domain;
-
-    console.log(domain);
 
     switch(domain) {
         case 'ts.la':

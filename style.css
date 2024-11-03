@@ -755,9 +755,10 @@ top: 8px
 	border-radius: 10px;
 }
 .video-cam canvas {
-	visibility: hidden;
 	position: absolute;
 	top: 0px;
+	left: 0px;
+	width: 100%;
 }
 
 #camera-button {
