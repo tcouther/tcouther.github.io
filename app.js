@@ -361,8 +361,10 @@ function renderCameraModal(){
   const navBtnEl = modal.querySelector('#navigateCodeButton');
   const videoDisplay = modal.querySelector('#video-display');
   const canvas = document.createElement('canvas');
+  const video = document.createElement('video');
+  const spinner = modal.querySelector('.spinner-ring');
 
-  videoDisplay.innerHTML = '';
+  spinner.classList.add('loading');
 
   addBtnEl.classList.add('hide');
   navBtnEl.classList.add('hide');
@@ -370,8 +372,9 @@ function renderCameraModal(){
   APP_GLOBALS.clipboard = "";
   outputField.innerText = "Scanning for qr codes ...";
 
+  videoDisplay.innerHTML = '';
+  videoDisplay.appendChild(video);
   videoDisplay.appendChild(canvas);
-  const context = canvas.getContext('2d',{ willReadFrequently: true });
 
   const constraints = { 
     audio: false,
@@ -388,19 +391,22 @@ function renderCameraModal(){
         // Use facingMode: environment to attemt to get the front camera on phones
         navigator.mediaDevices.getUserMedia(constraints).then((stream)=>{
 
-          const video = document.createElement('video');
-          videoDisplay.appendChild(video);
-
           APP_GLOBALS.stream = stream;
           video.srcObject = stream;
           video.setAttribute("playsinline", true); // required to tell iOS safari we don't want fullscreen
           video.play();
 
-          APP_GLOBALS.scanning = setInterval(() => {
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          const dimensions = video.getBoundingClientRect();
 
+          canvas.width = dimensions.width;//video.videoWidth;
+          canvas.height = dimensions.height;//video.videoHeight;
+          
+          const context = canvas.getContext('2d',{ willReadFrequently: true });
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          spinner.classList.remove('loading');
+
+          APP_GLOBALS.scanning = setInterval(() => {
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             const code = jsQR(imageData.data, imageData.width, imageData.height);
 
