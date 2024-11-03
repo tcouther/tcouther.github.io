@@ -442,7 +442,9 @@ function renderCameraModal(){
 
   APP_GLOBALS.cameraModal.show(modal);
 
-  setVideoCam();
+  setTimeout(()=>{
+    setVideoCam();
+  },1200);
 }
 
 
