@@ -1,6 +1,6 @@
 # terrill.github.io
 
-LinkyBucket 11/1/2024, PWA Version 1
+LinkyBucket PWA 11/9/2024 : Version 1.0
 [linkybucket app](https://tcouther.github.io)
 
 Dependencies:
