@@ -1254,8 +1254,6 @@ function renderLinkAccordions(){
     * Renders links in each accordion drawer
     */
 function renderLinkList(){
-
-    let instructions = document.getElementById('instructions');
     
     //produce sorted link list
     let listTypes = {};
@@ -1280,13 +1278,7 @@ function renderLinkList(){
     //record in cache
     APP_GLOBALS.linkListByType = listTypes;
 
-    if ( listCount === 0 ) {
-        //display instructions
-        instructions.classList.remove('d-none');
-    } else {
-        //hide instructions
-        instructions.classList.add('d-none');
-
+    if ( listCount !== 0 ) {
         //render each list (grouped by type)
         for (let key in listTypes) {
 
