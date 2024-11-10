@@ -1164,7 +1164,7 @@ function lock(){
     */
 function renderAddButton(container,data){
     let button = document.createElement('BUTTON');
-    button.className = 'btn btn-secondary w-100 fs-5 mt-2 ';
+    button.className = 'btn btn-dark w-100 fs-5 mt-2 ';
     button.innerText = 'Add to ' + data.label + ' +';
 
     button.addEventListener('click',()=>{
@@ -1225,7 +1225,7 @@ function renderLinkAccordions(){
         //accordionItemDrawer.style.backgroundColor = linkTypes[key].color;
 
         const accordionItemBody = document.createElement('DIV');
-        accordionItemBody.className = 'accordion-body p-1';
+        accordionItemBody.className = 'accordion-body p-2';
         accordionItemBody.id = itemBodyId;
 
         const emptyMessage = document.createElement('P');
@@ -1303,7 +1303,7 @@ function getShareAllElement(category){
     const element = document.createElement('BUTTON');
     
     element.innerText = 'Share all';
-    element.className = 'btn btn-secondary w-100 fs-5 mt-2';
+    element.className = 'btn btn-outline-dark w-100 fs-5 mt-2';
 
     element.addEventListener('click', ()=>{
         shareAllByType(category);
