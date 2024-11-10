@@ -1,6 +1,6 @@
 # terrill.github.io
 
-LinkyBucket 11/1/2024, PWA Version 1
+LinkyBucket 11/9/2024, PWA Version 1.0
 
 Dependencies:
 - jsQR (11/1/2024) to scan video stream for QR code data.

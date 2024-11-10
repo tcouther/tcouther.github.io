@@ -377,19 +377,24 @@ top: 8px
     overflow: hidden;
 }
 
+.header {
+	border-radius: 4px;
+    background-color: #39b8b8;
+    color: #FFF;
+}
+
 .profile-photo-container {
-    max-width: 120px;
-    margin: 15px auto 0px;
+    max-width: 60px;
     min-height: 90px;
     background-color: #EEE;
 }
 .profile-photo-container .photo-img {
     display: none;
-    max-width: 100%;
-    border-radius: 10px;
+    max-width: 70px;
+    border-radius: 4px;
 }
 .profile-photo-container.has-image {
-    min-height: 10px;
+    min-height: 5px;
     background-color: transparent;
 }
 .profile-photo-container.has-image .photo-img {
@@ -777,9 +782,11 @@ top: 8px
 }
 
 #camera-button {
-	position: absolute;
-	right: 20px;
-	top: 20px;
+
+}
+
+#settings-button {
+
 }
 
 #scanned-output {

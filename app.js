@@ -1,6 +1,6 @@
 /**
  * WORKING PROTOTYPE
- * LinkyBucket 11/1/2024
+ * LinkyBucket PWA 1.0 11/9/2024
  */
 
 //Register service worker for caching on PWA installed device
